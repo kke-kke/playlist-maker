@@ -36,10 +36,10 @@
         android:textSize="@dimen/toolbar_text"
         app:iconGravity="textStart"
         app:icon="@drawable/ic_search"
-        app:iconPadding="1dp"
+        app:iconPadding="@dimen/button_radius"
         app:iconTint="@color/main_font_color"
         app:backgroundTint="@color/white"
-        app:cornerRadius="16dp" />
+        app:cornerRadius="@dimen/button_radius" />
 
     <Button
         android:layout_width="match_parent"
@@ -51,10 +51,10 @@
         android:textSize="@dimen/toolbar_text"
         app:iconGravity="textStart"
         app:icon="@drawable/ic_library"
-        app:iconPadding="1dp"
+        app:iconPadding="@dimen/button_radius"
         app:iconTint="@color/main_font_color"
         app:backgroundTint="@color/white"
-        app:cornerRadius="16dp" />
+        app:cornerRadius="@dimen/button_radius" />
 
     <Button
         android:layout_width="match_parent"
@@ -66,9 +66,9 @@
         android:textSize="@dimen/toolbar_text"
         app:iconGravity="textStart"
         app:icon="@drawable/ic_settings"
-        app:iconPadding="1dp"
+        app:iconPadding="@dimen/button_radius"
         app:iconTint="@color/main_font_color"
         app:backgroundTint="@color/white"
-        app:cornerRadius="16dp" />
+        app:cornerRadius="@dimen/button_radius" />
 
 </LinearLayout>
