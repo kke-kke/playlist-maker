@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/toolbar_primary_margin"
+            android:src="@drawable/ic_arrow_back"
+            android:background="@color/white" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/toolbar_primary_margin"
+            android:layout_marginStart="@dimen/toolbar_primary_margin"
+            android:layout_marginEnd="1dp"
+            android:text="@string/settings"
+            android:textColor="@color/main_font_color"
+            android:textSize="@dimen/toolbar_text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginVertical="@dimen/menu_vertical_margin"
+        android:layout_marginStart="@dimen/menu_primary_margin"
+        android:layout_marginEnd="@dimen/menu_end_margin" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:text="@string/dark_theme"
+            android:textColor="@color/black"
+            android:textSize="@dimen/primary_menu_text" />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginVertical="@dimen/menu_vertical_margin"
+        android:layout_marginStart="@dimen/menu_primary_margin"
+        android:layout_marginEnd="@dimen/menu_end_margin" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:text="@string/share"
+            android:textColor="@color/black"
+            android:textSize="@dimen/primary_menu_text" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_share_button"
+            android:background="@color/white"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginVertical="@dimen/menu_vertical_margin"
+        android:layout_marginStart="@dimen/menu_primary_margin"
+        android:layout_marginEnd="@dimen/menu_end_margin" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:text="@string/support"
+            android:textColor="@color/black"
+            android:textSize="@dimen/primary_menu_text" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_support"
+            android:background="@color/white"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginVertical="@dimen/menu_vertical_margin"
+        android:layout_marginStart="@dimen/menu_primary_margin"
+        android:layout_marginEnd="@dimen/menu_end_margin" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:text="@string/user_agreement"
+            android:textColor="@color/black"
+            android:textSize="@dimen/primary_menu_text" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_light_arrow"
+            android:background="@color/white"
+            />
+
+    </LinearLayout>
+</LinearLayout>
