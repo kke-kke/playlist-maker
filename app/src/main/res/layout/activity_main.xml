@@ -1,18 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:background="@color/main_background_color" >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_margin="@dimen/menu_primary_margin" >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/toolbar_primary_margin"
+            android:layout_marginStart="@dimen/toolbar_primary_margin"
+            android:layout_marginEnd="1dp"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/toolbar_text" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/menu_primary_margin"
+        android:layout_weight="1"
+        android:text="@string/search"
+        android:textColor="@color/main_font_color"
+        android:textSize="@dimen/toolbar_text"
+        app:iconGravity="textStart"
+        app:icon="@drawable/ic_search"
+        app:iconPadding="1dp"
+        app:iconTint="@color/main_font_color"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="16dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="@dimen/menu_primary_margin"
+        android:text="@string/library"
+        android:textColor="@color/main_font_color"
+        android:textSize="@dimen/toolbar_text"
+        app:iconGravity="textStart"
+        app:icon="@drawable/ic_library"
+        app:iconPadding="1dp"
+        app:iconTint="@color/main_font_color"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="16dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="@dimen/menu_primary_margin"
+        android:text="@string/settings"
+        android:textColor="@color/main_font_color"
+        android:textSize="@dimen/toolbar_text"
+        app:iconGravity="textStart"
+        app:icon="@drawable/ic_settings"
+        app:iconPadding="1dp"
+        app:iconTint="@color/main_font_color"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="16dp" />
+
+</LinearLayout>
