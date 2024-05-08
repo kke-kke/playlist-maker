@@ -27,6 +27,7 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="@dimen/menu_primary_margin"
@@ -42,6 +43,7 @@
         app:cornerRadius="@dimen/button_radius" />
 
     <Button
+        android:id="@+id/library"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -57,6 +59,7 @@
         app:cornerRadius="@dimen/button_radius" />
 
     <Button
+        android:id="@+id/settings"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
