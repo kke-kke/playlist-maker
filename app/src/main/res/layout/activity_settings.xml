@@ -12,6 +12,7 @@
         android:padding="4dp">
 
         <ImageButton
+            android:id="@+id/settings_arrow_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/toolbar_primary_margin"
@@ -48,6 +49,7 @@
             android:textSize="@dimen/primary_menu_text" />
 
         <Switch
+            android:id="@+id/settings_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
@@ -72,6 +74,7 @@
             android:textSize="@dimen/primary_menu_text" />
 
         <ImageButton
+            android:id="@+id/settings_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_share_button"
@@ -97,6 +100,7 @@
             android:textSize="@dimen/primary_menu_text" />
 
         <ImageButton
+            android:id="@+id/settings_support"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_support"
@@ -122,6 +126,7 @@
             android:textSize="@dimen/primary_menu_text" />
 
         <ImageButton
+            android:id="@+id/settings_user_agreement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_light_arrow"
