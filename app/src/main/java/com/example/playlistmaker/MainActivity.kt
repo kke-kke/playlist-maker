@@ -10,9 +10,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val searchButton = findViewById<Button>(R.id.search)
-        val libraryButton = findViewById<Button>(R.id.library)
-        val settingsButton = findViewById<Button>(R.id.settings)
+        val searchButton = findViewById<Button>(R.id.searchButton)
+        val libraryButton = findViewById<Button>(R.id.libraryButton)
+        val settingsButton = findViewById<Button>(R.id.settingsButton)
 
         val searchIntent = Intent(this, SearchActivity::class.java)
         val libraryIntent = Intent(this, LibraryActivity::class.java)

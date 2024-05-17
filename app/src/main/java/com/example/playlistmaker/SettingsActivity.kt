@@ -10,7 +10,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val backButton = findViewById<ImageButton>(R.id.settings_arrow_back)
+        val backButton = findViewById<ImageButton>(R.id.backArrowSettings)
 
         backButton.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))

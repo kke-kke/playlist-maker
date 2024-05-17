@@ -19,7 +19,6 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="@dimen/toolbar_primary_margin"
             android:layout_marginStart="@dimen/toolbar_primary_margin"
-            android:layout_marginEnd="1dp"
             android:text="@string/app_name"
             android:textColor="@color/white"
             android:textSize="@dimen/toolbar_text" />
@@ -27,7 +26,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/search"
+        android:id="@+id/searchButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="@dimen/menu_primary_margin"
@@ -43,7 +42,7 @@
         app:cornerRadius="@dimen/button_radius" />
 
     <Button
-        android:id="@+id/library"
+        android:id="@+id/libraryButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -59,7 +58,7 @@
         app:cornerRadius="@dimen/button_radius" />
 
     <Button
-        android:id="@+id/settings"
+        android:id="@+id/settingsButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
