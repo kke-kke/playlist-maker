@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -31,19 +30,17 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:layout_marginVertical="@dimen/menu_vertical_margin"
         android:layout_marginStart="@dimen/menu_primary_margin"
         android:layout_marginEnd="@dimen/menu_end_margin" >
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"
+            android:layout_gravity="start"
             android:text="@string/dark_theme"
             android:textColor="@color/black"
             android:textSize="@dimen/primary_menu_text" />
@@ -52,23 +49,22 @@
             android:id="@+id/switchSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
+            android:layout_gravity="end"
             />
 
-    </LinearLayout>
+    </FrameLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:layout_marginVertical="@dimen/menu_vertical_margin"
         android:layout_marginStart="@dimen/menu_primary_margin"
         android:layout_marginEnd="@dimen/menu_end_margin" >
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"
+            android:layout_gravity="start"
             android:text="@string/share"
             android:textColor="@color/black"
             android:textSize="@dimen/primary_menu_text" />
@@ -77,25 +73,24 @@
             android:id="@+id/shareSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:padding="@dimen/menu_end_margin"
             android:src="@drawable/ic_share_button"
-            android:background="@color/white"
-            />
+            android:background="@color/white" />
 
-    </LinearLayout>
+    </FrameLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:layout_marginVertical="@dimen/menu_vertical_margin"
         android:layout_marginStart="@dimen/menu_primary_margin"
         android:layout_marginEnd="@dimen/menu_end_margin" >
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"
+            android:layout_gravity="start"
             android:text="@string/support"
             android:textColor="@color/black"
             android:textSize="@dimen/primary_menu_text" />
@@ -104,24 +99,23 @@
             android:id="@+id/supportSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:src="@drawable/ic_support"
-            android:background="@color/white"
-            />
+            android:background="@color/white" />
 
-    </LinearLayout>
+    </FrameLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:layout_marginVertical="@dimen/menu_vertical_margin"
         android:layout_marginStart="@dimen/menu_primary_margin"
         android:layout_marginEnd="@dimen/menu_end_margin" >
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"
+            android:layout_gravity="start"
             android:text="@string/user_agreement"
             android:textColor="@color/black"
             android:textSize="@dimen/primary_menu_text" />
@@ -130,9 +124,9 @@
             android:id="@+id/userAgreementSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:src="@drawable/ic_light_arrow"
-            android:background="@color/white"
-            />
+            android:background="@color/white" />
 
-    </LinearLayout>
+    </FrameLayout>
 </LinearLayout>
