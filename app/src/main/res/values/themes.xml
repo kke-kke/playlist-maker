@@ -2,7 +2,13 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimaryVariant">@color/main_background_color</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/main_font_color</item>
+        <item name="android:textColorPrimary">@color/main_font_color</item>
+        <item name="colorControlNormal">@color/icon_color</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
