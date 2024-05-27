@@ -1,5 +1,7 @@
 package com.example.playlistmaker
 
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
@@ -12,18 +14,56 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         val backButton = findViewById<ImageButton>(R.id.backArrowSettings)
+        val switchThemes = findViewById<Switch>(R.id.switchThemeSettings)
+        val shareButton = findViewById<ImageButton>(R.id.shareSettings)
+        val supportButton = findViewById<ImageButton>(R.id.supportSettings)
+        val userAgreementButton = findViewById<ImageButton>(R.id.userAgreementSettings)
 
+        // кнопка "назад"
         backButton.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        val switchThemes = findViewById<Switch>(R.id.switchThemeSettings)
-
+        // переключение темы
         switchThemes.setOnCheckedChangeListener { _, isChecked ->
             AppCompatDelegate.setDefaultNightMode(
                 if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
                 else AppCompatDelegate.MODE_NIGHT_NO
             )
         }
+
+        // поделиться приложением
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, getString(R.string.share_link))
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+
+        shareButton.setOnClickListener{
+            startActivity(shareIntent)
+        }
+
+        // написать в поддержку
+        val supportIntent: Intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_default_email)))
+            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_email_subject))
+            putExtra(Intent.EXTRA_TEXT, getString(R.string.support_email_body))
+        }
+
+        supportButton.setOnClickListener{
+            startActivity(supportIntent)
+        }
+
+        // пользовательское соглашение
+        val webpage: Uri = Uri.parse(getString(R.string.user_agreement_link))
+        val intent = Intent(Intent.ACTION_VIEW, webpage)
+
+        userAgreementButton.setOnClickListener {
+            startActivity(intent)
+        }
+
     }
 }
