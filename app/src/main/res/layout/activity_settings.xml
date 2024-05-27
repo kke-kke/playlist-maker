@@ -4,18 +4,11 @@
     style="@style/WhiteLinearLayout">
 
     <androidx.appcompat.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
+        style="@style/SubActivityToolbar">
 
         <ImageButton
             android:id="@+id/backArrowSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/toolbar_primary_margin"
-            android:src="@drawable/ic_arrow_back"
-            app:tint="?attr/colorOnPrimary"
-            android:background="?attr/colorPrimary" />
+            style="@style/BackToolbarButton" />
 
         <TextView
             android:text="@string/settings"
