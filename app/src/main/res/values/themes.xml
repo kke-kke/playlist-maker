@@ -9,6 +9,7 @@
         <item name="colorControlNormal">@color/icon_color</item>
         <item name="colorAccent">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:colorBackground">@color/searchbar_color</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />

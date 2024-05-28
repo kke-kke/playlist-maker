@@ -74,5 +74,22 @@
         <item name="android:layout_marginEnd">@dimen/menu_end_margin</item>
     </style>
     <!--    Search  -->
-
+    <style name="SearchEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:padding">@dimen/menu_end_margin</item>
+        <item name="android:layout_marginHorizontal">@dimen/menu_primary_margin</item>
+        <item name="android:layout_marginVertical">@dimen/menu_end_margin</item>
+        <item name="android:drawableStart">@drawable/ic_search</item>
+        <item name="android:drawableTint">?android:attr/colorControlNormal</item>
+        <item name="android:drawablePadding">@dimen/button_radius</item>
+        <item name="android:inputType">text</item>
+        <item name="android:hint">@string/search</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textColorHint">?attr/colorControlNormal</item>
+        <item name="android:background">?android:attr/colorBackground</item>
+    </style>
 </resources>
