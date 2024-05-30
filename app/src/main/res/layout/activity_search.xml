@@ -2,22 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/WhiteLinearLayout">
 
-    <androidx.appcompat.widget.Toolbar
-        style="@style/SubActivityToolbar">
+    <androidx.appcompat.widget.Toolbar style="@style/SubActivityToolbar">
 
         <ImageButton
-            android:id="@+id/backArrowSettings"
+            android:id="@+id/backArrowSearch"
             style="@style/BackToolbarButton" />
 
         <TextView
+            style="@style/ToolbarTextView"
             android:text="@string/search"
-            android:textColor="?attr/colorOnPrimary"
-            style="@style/ToolbarTextView" />
+            android:textColor="?attr/colorOnPrimary" />
 
     </androidx.appcompat.widget.Toolbar>
 
-    <EditText
-        android:id="@+id/searchEditText"
-        style="@style/SearchEditText"/>
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/TextInput"
+        android:id="@+id/searchBarContainer">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/SearchEditText"
+            android:id="@+id/searchBar" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
