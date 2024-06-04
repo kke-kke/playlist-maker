@@ -15,7 +15,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var inputEditText: TextInputEditText
 
     companion object {
-        const val SEARCH_TEXT: String = ""
+        const val SEARCH_TEXT: String = "SEARCH"
         const val DEFAULT_VALUE = ""
     }
 
