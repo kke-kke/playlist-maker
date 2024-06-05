@@ -11,12 +11,6 @@ import androidx.appcompat.app.AppCompatDelegate
 
 class SettingsActivity : AppCompatActivity() {
 
-    companion object {
-        const val SWITCH_STATE: String = "SWITCH_STATE"
-        const val DEFAULT_VALUE = false
-        const val PREFERENCES = "My_Preferences"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -80,5 +74,11 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+    }
+
+    companion object {
+        private const val SWITCH_STATE: String = "SWITCH_STATE"
+        private const val DEFAULT_VALUE = false
+        private const val PREFERENCES = "My_Preferences"
     }
 }

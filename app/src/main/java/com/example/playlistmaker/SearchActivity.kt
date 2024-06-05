@@ -14,11 +14,6 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var inputEditText: TextInputEditText
 
-    companion object {
-        const val SEARCH_TEXT: String = "SEARCH"
-        const val DEFAULT_VALUE = ""
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -29,12 +24,6 @@ class SearchActivity : AppCompatActivity() {
         // кнопка "назад"
         backButton.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
-        }
-
-        // восстанавливается сохраненное состояние, если есть
-        if (savedInstanceState != null) {
-            searchValue = savedInstanceState.getString(SEARCH_TEXT, DEFAULT_VALUE)
-            inputEditText.setText(searchValue)
         }
 
         // строка поиска
@@ -71,6 +60,11 @@ class SearchActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         val mgr = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         mgr.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+    }
+
+    companion object {
+        private const val SEARCH_TEXT: String = "SEARCH"
+        private const val DEFAULT_VALUE = ""
     }
 
 }
