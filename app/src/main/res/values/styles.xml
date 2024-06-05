@@ -80,10 +80,6 @@
     <style name="SearchEditText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <!-- Padding & margin -->
-        <item name="android:padding">@dimen/menu_end_margin</item>
-        <item name="android:layout_marginHorizontal">@dimen/menu_primary_margin</item>
-        <item name="android:layout_marginVertical">@dimen/menu_end_margin</item>
         <!-- Input -->
         <item name="android:inputType">text</item>
         <item name="android:hint">@string/search</item>
@@ -97,6 +93,9 @@
     <style name="TextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <!-- Padding & margin -->
+        <item name="android:layout_marginHorizontal">@dimen/menu_primary_margin</item>
+        <item name="android:layout_marginVertical">@dimen/menu_end_margin</item>
         <!-- Start icon -->
         <item name="startIconDrawable">@drawable/ic_small_search</item>
         <item name="startIconTint">?attr/colorOnSurface</item>
