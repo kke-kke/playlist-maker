@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,13 @@ import android.widget.Switch
 import androidx.appcompat.app.AppCompatDelegate
 
 class SettingsActivity : AppCompatActivity() {
+
+    companion object {
+        const val SWITCH_STATE: String = "SWITCH_STATE"
+        const val DEFAULT_VALUE = false
+        const val PREFERENCES = "My_Preferences"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -25,11 +33,18 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // переключение темы
+        // получаем состояние switch
+        val sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        val switchState = sharedPreferences.getBoolean(SWITCH_STATE, DEFAULT_VALUE)
+        switchThemes.isChecked = switchState
         switchThemes.setOnCheckedChangeListener { _, isChecked ->
             AppCompatDelegate.setDefaultNightMode(
                 if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
                 else AppCompatDelegate.MODE_NIGHT_NO
             )
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(SWITCH_STATE, isChecked)
+            editor.apply()
         }
 
         // поделиться приложением
