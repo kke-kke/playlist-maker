@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     style="@style/WhiteLinearLayout">
 
     <androidx.appcompat.widget.Toolbar
-        style="@style/SubActivityToolbar">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp" >
 
         <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/toolbar_primary_margin"
             android:id="@+id/backArrowSettings"
             style="@style/BackToolbarButton" />
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/toolbar_primary_margin"
+            android:layout_marginStart="@dimen/toolbar_primary_margin"
             android:text="@string/settings"
             android:textColor="?attr/colorOnPrimary"
             style="@style/ToolbarTextView" />
@@ -20,9 +32,14 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/SettingsFrameLayout" >
+        android:layout_marginVertical="@dimen/menu_vertical_margin"
+        android:layout_marginStart="@dimen/menu_primary_margin"
+        android:layout_marginEnd="@dimen/menu_end_margin" >
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:text="@string/dark_theme"
             style="@style/MenuItemTextView" />
 
@@ -30,21 +47,28 @@
             android:id="@+id/switchThemeSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            />
+            android:layout_gravity="end" />
 
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/SettingsFrameLayout" >
+        android:layout_marginVertical="@dimen/menu_vertical_margin"
+        android:layout_marginStart="@dimen/menu_primary_margin"
+        android:layout_marginEnd="@dimen/menu_end_margin" >
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:text="@string/share"
             style="@style/MenuItemTextView" />
 
         <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:id="@+id/shareSettings"
             android:src="@drawable/ic_share_button"
             style="@style/MenuButton" />
@@ -54,13 +78,21 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/SettingsFrameLayout" >
+        android:layout_marginVertical="@dimen/menu_vertical_margin"
+        android:layout_marginStart="@dimen/menu_primary_margin"
+        android:layout_marginEnd="@dimen/menu_end_margin" >
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:text="@string/support"
             style="@style/MenuItemTextView" />
 
         <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:id="@+id/supportSettings"
             android:src="@drawable/ic_support"
             style="@style/MenuButton" />
@@ -70,13 +102,21 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/SettingsFrameLayout" >
+        android:layout_marginVertical="@dimen/menu_vertical_margin"
+        android:layout_marginStart="@dimen/menu_primary_margin"
+        android:layout_marginEnd="@dimen/menu_end_margin" >
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:text="@string/user_agreement"
             style="@style/MenuItemTextView" />
 
         <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:id="@+id/userAgreementSettings"
             android:src="@drawable/ic_light_arrow"
             style="@style/MenuButton" />

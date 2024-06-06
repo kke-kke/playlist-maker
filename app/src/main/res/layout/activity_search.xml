@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     style="@style/WhiteLinearLayout">
 
-    <androidx.appcompat.widget.Toolbar style="@style/SubActivityToolbar">
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp" >
 
         <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/toolbar_primary_margin"
             android:id="@+id/backArrowSearch"
             style="@style/BackToolbarButton" />
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/toolbar_primary_margin"
+            android:layout_marginStart="@dimen/toolbar_primary_margin"
             style="@style/ToolbarTextView"
             android:text="@string/search"
             android:textColor="?attr/colorOnPrimary" />
@@ -16,10 +29,16 @@
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/menu_primary_margin"
+        android:layout_marginVertical="@dimen/menu_end_margin"
         style="@style/TextInput"
         android:id="@+id/searchBarContainer">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             style="@style/SearchEditText"
             android:id="@+id/searchBar" />
 

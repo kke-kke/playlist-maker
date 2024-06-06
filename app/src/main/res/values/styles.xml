@@ -2,15 +2,10 @@
 <resources>
     <!--    Main activity   -->
     <style name="BlueLinearLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
         <item name="android:orientation">vertical</item>
         <item name="android:background">?attr/colorPrimaryVariant</item>
     </style>
     <style name="MainMenuButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:layout_weight">1</item>
         <!-- Text attributes -->
         <item name="textAllCaps">false</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
@@ -25,61 +20,31 @@
         <item name="cornerRadius">@dimen/button_radius</item>
     </style>
     <style name="ToolbarTextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">@dimen/toolbar_primary_margin</item>
-        <item name="android:layout_marginStart">@dimen/toolbar_primary_margin</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textSize">@dimen/toolbar_text</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
     <!--    Sub activities  -->
     <style name="WhiteLinearLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
         <item name="android:orientation">vertical</item>
         <item name="android:background">?attr/colorPrimary</item>
     </style>
-    <style name="SubActivityToolbar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">8dp</item>
-    </style>
     <style name="BackToolbarButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_margin">@dimen/toolbar_primary_margin</item>
         <item name="android:src">@drawable/ic_arrow_back</item>
         <item name="tint">?attr/colorOnPrimary</item>
         <item name="android:background">?attr/colorPrimary</item>
     </style>
     <!--    Settings menu   -->
     <style name="MenuItemTextView">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">start</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/primary_menu_text</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
     <style name="MenuButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">end</item>
         <item name="android:background">?attr/colorPrimary</item>
-    </style>
-    <style name="SettingsFrameLayout">
-<!--        <item name="android:layout_width">match_parent</item>-->
-<!--        <item name="android:layout_height">wrap_content</item>-->
-        <item name="android:layout_marginVertical">@dimen/menu_vertical_margin</item>
-        <item name="android:layout_marginStart">@dimen/menu_primary_margin</item>
-        <item name="android:layout_marginEnd">@dimen/menu_end_margin</item>
     </style>
     <!--    Search  -->
     <style name="SearchEditText">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
         <!-- Input -->
         <item name="android:inputType">text</item>
         <item name="android:hint">@string/search</item>
@@ -91,11 +56,6 @@
         <item name="android:textColorHint">?attr/hintTextColor</item>
     </style>
     <style name="TextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <!-- Padding & margin -->
-        <item name="android:layout_marginHorizontal">@dimen/menu_primary_margin</item>
-        <item name="android:layout_marginVertical">@dimen/menu_end_margin</item>
         <!-- Start icon -->
         <item name="startIconDrawable">@drawable/ic_small_search</item>
         <item name="startIconTint">?attr/colorOnSurface</item>
