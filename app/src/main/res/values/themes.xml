@@ -10,6 +10,7 @@
         <item name="colorButtonNormal">@color/white</item>
         <item name="colorAccent">@color/main_background_color</item>
         <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:textColorTertiary">@color/icon_color</item>
         <item name="android:colorBackground">@color/searchbar_color</item>
         <item name="colorOnSurface">@color/icon_color</item>
         <item name="hintTextColor">@color/icon_color</item>
