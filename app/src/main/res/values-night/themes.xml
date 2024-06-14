@@ -11,6 +11,7 @@
         <item name="colorAccent">@color/main_background_color</item>
         <item name="android:textColorPrimary">@color/main_font_color</item>
         <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:textColorTertiary">@color/white</item>
         <item name="android:colorBackground">@color/white</item>
         <item name="colorOnSurface">@color/main_font_color</item>
         <item name="hintTextColor">@color/main_font_color</item>

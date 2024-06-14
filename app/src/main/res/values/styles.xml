@@ -71,9 +71,19 @@
         <item name="cursorColor">@color/main_background_color</item>
         <item name="boxBackgroundColor">?android:attr/colorBackground</item>
         <!-- Corner radius -->
-        <item name="boxCornerRadiusBottomEnd">8dp</item>
-        <item name="boxCornerRadiusTopEnd">8dp</item>
-        <item name="boxCornerRadiusBottomStart">8dp</item>
-        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/menu_end_margin</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/menu_end_margin</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/menu_end_margin</item>
+        <item name="boxCornerRadiusTopStart">@dimen/menu_end_margin</item>
+    </style>
+    <style name="SmallTextRecycler">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/small_text</item>
+        <item name="android:textColor">?android:attr/textColorTertiary</item>
+    </style>
+    <style name="BigTextRecycler">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/primary_menu_text</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
     </style>
 </resources>
