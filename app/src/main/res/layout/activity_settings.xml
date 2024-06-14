@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    style="@style/WhiteLinearLayout">
 
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="8dp" >
 
         <ImageButton
-            android:id="@+id/backArrowSettings"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/toolbar_primary_margin"
-            android:src="@drawable/ic_arrow_back"
-            android:background="@color/white" />
+            android:id="@+id/backArrowSettings"
+            style="@style/BackToolbarButton" />
 
         <TextView
             android:layout_width="match_parent"
@@ -25,8 +24,8 @@
             android:layout_marginBottom="@dimen/toolbar_primary_margin"
             android:layout_marginStart="@dimen/toolbar_primary_margin"
             android:text="@string/settings"
-            android:textColor="@color/main_font_color"
-            android:textSize="@dimen/toolbar_text" />
+            android:textColor="?attr/colorOnPrimary"
+            style="@style/ToolbarTextView" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -42,15 +41,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:text="@string/dark_theme"
-            android:textColor="@color/black"
-            android:textSize="@dimen/primary_menu_text" />
+            style="@style/MenuItemTextView" />
 
         <Switch
-            android:id="@+id/switchSettings"
+            android:id="@+id/switchThemeSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            />
+            android:layout_gravity="end" />
 
     </FrameLayout>
 
@@ -66,17 +63,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:text="@string/share"
-            android:textColor="@color/black"
-            android:textSize="@dimen/primary_menu_text" />
+            style="@style/MenuItemTextView" />
 
         <ImageButton
-            android:id="@+id/shareSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:padding="@dimen/menu_end_margin"
+            android:id="@+id/shareSettings"
             android:src="@drawable/ic_share_button"
-            android:background="@color/white" />
+            style="@style/MenuButton" />
 
     </FrameLayout>
 
@@ -92,16 +87,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:text="@string/support"
-            android:textColor="@color/black"
-            android:textSize="@dimen/primary_menu_text" />
+            style="@style/MenuItemTextView" />
 
         <ImageButton
-            android:id="@+id/supportSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:id="@+id/supportSettings"
             android:src="@drawable/ic_support"
-            android:background="@color/white" />
+            style="@style/MenuButton" />
 
     </FrameLayout>
 
@@ -117,16 +111,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:text="@string/user_agreement"
-            android:textColor="@color/black"
-            android:textSize="@dimen/primary_menu_text" />
+            style="@style/MenuItemTextView" />
 
         <ImageButton
-            android:id="@+id/userAgreementSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:id="@+id/userAgreementSettings"
             android:src="@drawable/ic_light_arrow"
-            android:background="@color/white" />
+            style="@style/MenuButton" />
 
     </FrameLayout>
 </LinearLayout>
