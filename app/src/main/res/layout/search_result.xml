@@ -67,7 +67,8 @@
 
     <ImageButton
         android:id="@+id/goToSongButton"
-        style="@style/MenuButton"
+        app:tint="?android:attr/textColorTertiary"
+        android:background="?attr/colorPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
