@@ -12,14 +12,20 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val binding: SearchResultBinding = SearchResultBinding.bind(itemView)
 
     fun bind(track: Track) {
-        binding.songNameTextView.text = track.trackName
-        binding.songArtistTextView.text = track.artistName
-        binding.songLengthTextView.text = track.trackTime
-        Glide.with(itemView.context)
-            .load(track.artworkUrl100)
-            .placeholder(R.drawable.ic_mock_cover)
-            .fitCenter()
-            .apply(RequestOptions.bitmapTransform(RoundedCorners(4)))
-            .into(binding.albumCoverImage)
+        with(binding) {
+            songNameTextView.text = track.trackName
+            songArtistTextView.text = track.artistName
+            songLengthTextView.text = track.trackTime
+            Glide.with(itemView.context)
+                .load(track.artworkUrl100)
+                .placeholder(R.drawable.ic_mock_cover)
+                .fitCenter()
+                .apply(RequestOptions.bitmapTransform(RoundedCorners(4)))
+                .into(albumCoverImage)
+
+            songArtistTextView.invalidate()
+            songArtistTextView.requestLayout()
+        }
+
     }
 }
