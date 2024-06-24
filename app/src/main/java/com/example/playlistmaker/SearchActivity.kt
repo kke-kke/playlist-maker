@@ -6,7 +6,10 @@ import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 
 class SearchActivity : AppCompatActivity() {
@@ -17,6 +20,13 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        // recyclerView
+        val json: String = assets.open("tracks.json").bufferedReader().use { it.readText() }
+        val trackList = Gson().fromJson<ArrayList<Track>>(json, object : TypeToken<ArrayList<Track>>() {}.type)
+        val trackAdapter = TrackAdapter(trackList)
+        val recyclerView = findViewById<RecyclerView>(R.id.searchResultRecyclerView)
+        recyclerView.adapter = trackAdapter
 
         val backButton = findViewById<ImageButton>(R.id.backArrowSearch)
         inputEditText = findViewById(R.id.searchBar)
