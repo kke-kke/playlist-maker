@@ -24,5 +24,5 @@ interface SearchApi {
 }
 
 data class TrackResponse(
-    val items: List<Track>
+    val results: List<Track>
 )
