@@ -8,4 +8,5 @@
     <dimen name="menu_primary_margin">16dp</dimen>
     <dimen name="menu_end_margin">8dp</dimen>
     <dimen name="button_radius">16dp</dimen>
+    <dimen name="refresh_button_radius">54dp</dimen>
 </resources>
