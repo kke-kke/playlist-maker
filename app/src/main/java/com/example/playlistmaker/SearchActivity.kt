@@ -3,12 +3,13 @@ package com.example.playlistmaker
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -20,25 +21,29 @@ import retrofit2.Response
 class SearchActivity : AppCompatActivity() {
     private var searchValue: String = DEFAULT_VALUE
 
+    private lateinit var recyclerView: RecyclerView
     private lateinit var inputEditText: TextInputEditText
     private lateinit var placeholderMessage: TextView
+    private lateinit var placeholderLongerMessage: TextView
     private lateinit var placeholderImage: ImageView
+    private lateinit var refreshButton: Button
+    private lateinit var connectionProblemsLayout: LinearLayout
     private lateinit var trackAdapter: TrackAdapter
     private var trackList = ArrayList<Track>()
-    private val networkProblem : String = getString(R.string.connection_problems) + "/n/n" +
-            getString(R.string.connection_problems_message)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
         placeholderMessage = findViewById(R.id.placeholderMessage)
+        placeholderLongerMessage = findViewById(R.id.placeholderLongerMessage)
         placeholderImage = findViewById(R.id.placeholderImage)
+        refreshButton = findViewById(R.id.refreshButton)
+        connectionProblemsLayout = findViewById(R.id.connection_problems_layout)
 
         // recyclerView
-        val json: String = assets.open("tracks.json").bufferedReader().use { it.readText() }
         trackAdapter = TrackAdapter()
-        val recyclerView = findViewById<RecyclerView>(R.id.searchResultRecyclerView)
+        recyclerView = findViewById(R.id.searchResultRecyclerView)
         recyclerView.adapter = trackAdapter
 
         val backButton = findViewById<ImageButton>(R.id.backArrowSearch)
@@ -57,6 +62,9 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchValue = s.toString()
+                if (s.isNullOrEmpty()) {
+                    hideRecycler()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -70,33 +78,14 @@ class SearchActivity : AppCompatActivity() {
 
         trackAdapter.tracks = trackList
 
-        // поиск на иконку поиска
-        inputEditText.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_UP) {
-                val drawables = inputEditText.compoundDrawables
-                val startDrawable = drawables[0]
-
-                startDrawable?.let {
-                    val drawableBounds = it.bounds
-                    val drawableWidth = drawableBounds.width()
-
-                    if (event.rawX <= (inputEditText.left + drawableWidth + inputEditText.paddingStart)) {
-                        // Запуск логики поиска
-                        performSearch(inputEditText.text.toString())
-                        return@setOnTouchListener true
-                    }
-                }
-            }
-            false
-        }
         // поиск на клавиатуре
-        inputEditText.setOnEditorActionListener { _, actionId, _ ->
+        inputEditText.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 performSearch(inputEditText.text.toString())
-                true
+                return@OnEditorActionListener true
             }
             false
-        }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -113,6 +102,12 @@ class SearchActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         val mgr = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         mgr.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+        hideRecycler()
+    }
+
+    private fun hideRecycler() {
+        recyclerView.visibility = View.GONE
+        trackList.clear()
     }
 
     private fun performSearch(query: String) {
@@ -134,12 +129,13 @@ class SearchActivity : AppCompatActivity() {
                             showMessage(R.drawable.nothing_found, getString(R.string.nothing_found))
                         }
                     } else {
-                        showMessage(R.drawable.network_connection_problems, networkProblem)
+                        showNetworkProblemsMessage(R.drawable.network_connection_problems, getString(R.string.connection_problems))
                     }
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    showMessage(R.drawable.network_connection_problems, networkProblem)
+//                    trackList.clear()
+                    showNetworkProblemsMessage(R.drawable.network_connection_problems, getString(R.string.connection_problems))
                 }
             })
         }
@@ -159,6 +155,27 @@ class SearchActivity : AppCompatActivity() {
             placeholderMessage.visibility = View.GONE
             placeholderImage.visibility = View.GONE
         }
+    }
+
+    private fun showNetworkProblemsMessage(image: Int, textMessage: String) {
+        if (textMessage.isNotEmpty()) {
+            placeholderMessage.visibility = View.VISIBLE
+            connectionProblemsLayout.visibility = View.VISIBLE
+            trackList.clear()
+            trackAdapter.notifyDataSetChanged()
+            placeholderMessage.text = textMessage
+            if (image != 0) {
+                placeholderImage.setImageResource(image)
+            }
+        } else {
+            placeholderMessage.visibility = View.GONE
+            placeholderImage.visibility = View.GONE
+            connectionProblemsLayout.visibility = View.GONE
+        }
+    }
+
+    private fun doRefresh() {
+
     }
 
     companion object {
