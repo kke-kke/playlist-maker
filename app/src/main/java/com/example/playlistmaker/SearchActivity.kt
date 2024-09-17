@@ -8,7 +8,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -23,23 +22,22 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var inputEditText: TextInputEditText
-    private lateinit var placeholderMessage: TextView
-    private lateinit var placeholderLongerMessage: TextView
-    private lateinit var placeholderImage: ImageView
     private lateinit var refreshButton: Button
+    private lateinit var errorLayout: LinearLayout
     private lateinit var connectionProblemsLayout: LinearLayout
+    private lateinit var networkProblemsLayout: LinearLayout
     private lateinit var trackAdapter: TrackAdapter
     private var trackList = ArrayList<Track>()
+    private var lastSearch: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        placeholderMessage = findViewById(R.id.placeholderMessage)
-        placeholderLongerMessage = findViewById(R.id.placeholderLongerMessage)
-        placeholderImage = findViewById(R.id.placeholderImage)
         refreshButton = findViewById(R.id.refreshButton)
+        errorLayout = findViewById(R.id.error_layout)
         connectionProblemsLayout = findViewById(R.id.connection_problems_layout)
+        networkProblemsLayout = findViewById(R.id.nothing_found_layout)
 
         // recyclerView
         trackAdapter = TrackAdapter()
@@ -64,6 +62,8 @@ class SearchActivity : AppCompatActivity() {
                 searchValue = s.toString()
                 if (s.isNullOrEmpty()) {
                     hideRecycler()
+                } else {
+                    recyclerView.visibility = View.VISIBLE
                 }
             }
 
@@ -79,13 +79,16 @@ class SearchActivity : AppCompatActivity() {
         trackAdapter.tracks = trackList
 
         // поиск на клавиатуре
-        inputEditText.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+        inputEditText.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 performSearch(inputEditText.text.toString())
                 return@OnEditorActionListener true
             }
             false
         })
+
+        // повторение последнего запроса при проблемах с сетью
+        refreshButton.setOnClickListener { doRefresh() }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -114,6 +117,9 @@ class SearchActivity : AppCompatActivity() {
         val searchApi = SearchApi.create()
 
         if (query.isNotEmpty()) {
+            hideAllMessages()
+
+            lastSearch = query
             searchApi.search(query).enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(
                     call: Call<TrackResponse>,
@@ -124,58 +130,42 @@ class SearchActivity : AppCompatActivity() {
                         if (response.body()?.results?.isNotEmpty() == true) {
                             trackList.addAll(response.body()?.results!!)
                             trackAdapter.notifyDataSetChanged()
-                        }
-                        if (trackList.isEmpty()) {
-                            showMessage(R.drawable.nothing_found, getString(R.string.nothing_found))
+                            hideAllMessages()
+                        } else {
+                            showMessage(networkProblemsLayout)
                         }
                     } else {
-                        showNetworkProblemsMessage(R.drawable.network_connection_problems, getString(R.string.connection_problems))
+                        showMessage(connectionProblemsLayout)
                     }
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-//                    trackList.clear()
-                    showNetworkProblemsMessage(R.drawable.network_connection_problems, getString(R.string.connection_problems))
+                    showMessage(connectionProblemsLayout)
                 }
             })
         }
 
     }
 
-    private fun showMessage(image: Int, textMessage: String) {
-        if (textMessage.isNotEmpty()) {
-            placeholderMessage.visibility = View.VISIBLE
-            trackList.clear()
-            trackAdapter.notifyDataSetChanged()
-            placeholderMessage.text = textMessage
-            if (image != 0) {
-                placeholderImage.setImageResource(image)
-            }
-        } else {
-            placeholderMessage.visibility = View.GONE
-            placeholderImage.visibility = View.GONE
+    private fun showMessage(layout: LinearLayout) {
+        hideAllMessages()
+        errorLayout.visibility = View.VISIBLE
+        when (layout) {
+            networkProblemsLayout -> networkProblemsLayout.visibility = View.VISIBLE
+            connectionProblemsLayout -> connectionProblemsLayout.visibility = View.VISIBLE
         }
+        trackList.clear()
+        trackAdapter.notifyDataSetChanged()
     }
 
-    private fun showNetworkProblemsMessage(image: Int, textMessage: String) {
-        if (textMessage.isNotEmpty()) {
-            placeholderMessage.visibility = View.VISIBLE
-            connectionProblemsLayout.visibility = View.VISIBLE
-            trackList.clear()
-            trackAdapter.notifyDataSetChanged()
-            placeholderMessage.text = textMessage
-            if (image != 0) {
-                placeholderImage.setImageResource(image)
-            }
-        } else {
-            placeholderMessage.visibility = View.GONE
-            placeholderImage.visibility = View.GONE
-            connectionProblemsLayout.visibility = View.GONE
-        }
+    private fun hideAllMessages() {
+        errorLayout.visibility = View.GONE
+        networkProblemsLayout.visibility = View.GONE
+        connectionProblemsLayout.visibility = View.GONE
     }
 
     private fun doRefresh() {
-
+        performSearch(lastSearch)
     }
 
     companion object {
