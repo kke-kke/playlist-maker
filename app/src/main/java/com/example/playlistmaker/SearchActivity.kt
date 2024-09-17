@@ -108,14 +108,12 @@ class SearchActivity : AppCompatActivity() {
 
             lastSearch = query
             searchApi.search(query).enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(
-                    call: Call<TrackResponse>,
-                    response: Response<TrackResponse>
-                ) {
+                override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
                     if (response.code() == 200) {
                         trackList.clear()
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            trackList.addAll(response.body()?.results!!)
+                        val results = response.body()?.results
+                        if (!results.isNullOrEmpty()) {
+                            trackList.addAll(results)
                             trackAdapter.notifyDataSetChanged()
                             hideAllMessages()
                         } else {
@@ -131,7 +129,6 @@ class SearchActivity : AppCompatActivity() {
                 }
             })
         }
-
     }
 
     private fun showMessage(layout: LinearLayout) {
