@@ -9,7 +9,7 @@
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp" >
+        android:padding="@dimen/menu_end_margin" >
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -57,38 +57,63 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <LinearLayout
+        android:id="@+id/error_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/margin_80"
+        android:layout_gravity="center"
+        android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/placeholderImage"
+        <LinearLayout
+            android:id="@+id/nothing_found_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="80dp"/>
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/placeholderMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingTop="16dp"
-            style="@style/SearchErrorText"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:src="@drawable/nothing_found"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="@dimen/menu_primary_margin"
+                style="@style/SearchErrorText"
+                android:text="@string/nothing_found"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone"
             android:id="@+id/connection_problems_layout">
 
-            <TextView
-                android:id="@+id/placeholderLongerMessage"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="8dp"
+                android:gravity="center"
+                android:src="@drawable/network_connection_problems"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="@dimen/menu_primary_margin"
+                style="@style/SearchErrorText"
+                android:text="@string/connection_problems"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_margin="@dimen/menu_end_margin"
                 android:text="@string/connection_problems_message"
                 style="@style/SearchErrorText" />
 
@@ -96,10 +121,10 @@
                 android:id="@+id/refreshButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:text="@string/refresh_button"
-                android:paddingVertical="4dp"
-                android:paddingHorizontal="8dp"
+                android:paddingVertical="@dimen/padding_4"
+                android:paddingHorizontal="@dimen/menu_end_margin"
                 style="@style/RefreshSearchButton"/>
 
         </LinearLayout>
