@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
             android:singleLine="true"
+            android:padding="@dimen/menu_end_margin"
             style="@style/SearchEditText"
             android:id="@+id/searchBar" />
 
