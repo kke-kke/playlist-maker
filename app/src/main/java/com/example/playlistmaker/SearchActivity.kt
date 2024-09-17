@@ -47,7 +47,7 @@ class SearchActivity : AppCompatActivity() {
                 if (s.isNullOrEmpty()) {
                     hideRecycler()
                 } else {
-                    searchBinding.searchResultRecyclerView.visibility = View.VISIBLE
+                    searchBinding.searchResultRecyclerView.show()
                 }
             }
 
@@ -93,7 +93,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun hideRecycler() {
-        searchBinding.searchResultRecyclerView.visibility = View.GONE
+        searchBinding.searchResultRecyclerView.gone()
         trackList.clear()
     }
 
@@ -133,23 +133,31 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showMessage(layout: LinearLayout) {
         hideAllMessages()
-        searchBinding.errorLayout.visibility = View.VISIBLE
+        searchBinding.errorLayout.show()
         when (layout) {
-            searchBinding.nothingFoundLayout -> searchBinding.nothingFoundLayout.visibility = View.VISIBLE
-            searchBinding.connectionProblemsLayout -> searchBinding.connectionProblemsLayout.visibility = View.VISIBLE
+            searchBinding.nothingFoundLayout -> searchBinding.nothingFoundLayout.show()
+            searchBinding.connectionProblemsLayout -> searchBinding.connectionProblemsLayout.show()
         }
         trackList.clear()
         trackAdapter.notifyDataSetChanged()
     }
 
     private fun hideAllMessages() {
-        searchBinding.errorLayout.visibility = View.GONE
-        searchBinding.nothingFoundLayout.visibility = View.GONE
-        searchBinding.connectionProblemsLayout.visibility = View.GONE
+        searchBinding.errorLayout.gone()
+        searchBinding.nothingFoundLayout.gone()
+        searchBinding.connectionProblemsLayout.gone()
     }
 
     private fun doRefresh() {
         performSearch(lastSearch)
+    }
+
+    private fun View.show() {
+        visibility = View.VISIBLE
+    }
+
+    private fun View.gone() {
+        visibility = View.GONE
     }
 
     companion object {
