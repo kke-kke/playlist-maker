@@ -6,13 +6,10 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,35 +17,22 @@ import retrofit2.Response
 class SearchActivity : AppCompatActivity() {
     private var searchValue: String = DEFAULT_VALUE
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var inputEditText: TextInputEditText
-    private lateinit var refreshButton: Button
-    private lateinit var errorLayout: LinearLayout
-    private lateinit var connectionProblemsLayout: LinearLayout
-    private lateinit var networkProblemsLayout: LinearLayout
+    private lateinit var searchBinding: ActivitySearchBinding
     private lateinit var trackAdapter: TrackAdapter
     private var trackList = ArrayList<Track>()
     private var lastSearch: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
-
-        refreshButton = findViewById(R.id.refreshButton)
-        errorLayout = findViewById(R.id.error_layout)
-        connectionProblemsLayout = findViewById(R.id.connection_problems_layout)
-        networkProblemsLayout = findViewById(R.id.nothing_found_layout)
+        searchBinding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(searchBinding.root)
 
         // recyclerView
         trackAdapter = TrackAdapter()
-        recyclerView = findViewById(R.id.searchResultRecyclerView)
-        recyclerView.adapter = trackAdapter
-
-        val backButton = findViewById<ImageButton>(R.id.backArrowSearch)
-        inputEditText = findViewById(R.id.searchBar)
+        searchBinding.searchResultRecyclerView.adapter = trackAdapter
 
         // кнопка "назад"
-        backButton.setOnClickListener {
+        searchBinding.backArrowSearch.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 
@@ -63,7 +47,7 @@ class SearchActivity : AppCompatActivity() {
                 if (s.isNullOrEmpty()) {
                     hideRecycler()
                 } else {
-                    recyclerView.visibility = View.VISIBLE
+                    searchBinding.searchResultRecyclerView.visibility = View.VISIBLE
                 }
             }
 
@@ -74,21 +58,21 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
-        inputEditText.addTextChangedListener(simpleTextWatcher)
+        searchBinding.searchBar.addTextChangedListener(simpleTextWatcher)
 
         trackAdapter.tracks = trackList
 
         // поиск на клавиатуре
-        inputEditText.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
+        searchBinding.searchBar.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                performSearch(inputEditText.text.toString())
+                performSearch(searchBinding.searchBar.text.toString())
                 return@OnEditorActionListener true
             }
             false
         })
 
         // повторение последнего запроса при проблемах с сетью
-        refreshButton.setOnClickListener { doRefresh() }
+        searchBinding.refreshButton.setOnClickListener { doRefresh() }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -99,17 +83,17 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchValue = savedInstanceState.getString(SEARCH_TEXT, DEFAULT_VALUE)
-        inputEditText.setText(searchValue)
+        searchBinding.searchBar.setText(searchValue)
     }
 
     private fun hideKeyboard() {
         val mgr = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        mgr.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+        mgr.hideSoftInputFromWindow(searchBinding.searchBar.windowToken, 0)
         hideRecycler()
     }
 
     private fun hideRecycler() {
-        recyclerView.visibility = View.GONE
+        searchBinding.searchResultRecyclerView.visibility = View.GONE
         trackList.clear()
     }
 
@@ -132,15 +116,15 @@ class SearchActivity : AppCompatActivity() {
                             trackAdapter.notifyDataSetChanged()
                             hideAllMessages()
                         } else {
-                            showMessage(networkProblemsLayout)
+                            showMessage(searchBinding.nothingFoundLayout)
                         }
                     } else {
-                        showMessage(connectionProblemsLayout)
+                        showMessage(searchBinding.connectionProblemsLayout)
                     }
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    showMessage(connectionProblemsLayout)
+                    showMessage(searchBinding.connectionProblemsLayout)
                 }
             })
         }
@@ -149,19 +133,19 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showMessage(layout: LinearLayout) {
         hideAllMessages()
-        errorLayout.visibility = View.VISIBLE
+        searchBinding.errorLayout.visibility = View.VISIBLE
         when (layout) {
-            networkProblemsLayout -> networkProblemsLayout.visibility = View.VISIBLE
-            connectionProblemsLayout -> connectionProblemsLayout.visibility = View.VISIBLE
+            searchBinding.nothingFoundLayout -> searchBinding.nothingFoundLayout.visibility = View.VISIBLE
+            searchBinding.connectionProblemsLayout -> searchBinding.connectionProblemsLayout.visibility = View.VISIBLE
         }
         trackList.clear()
         trackAdapter.notifyDataSetChanged()
     }
 
     private fun hideAllMessages() {
-        errorLayout.visibility = View.GONE
-        networkProblemsLayout.visibility = View.GONE
-        connectionProblemsLayout.visibility = View.GONE
+        searchBinding.errorLayout.visibility = View.GONE
+        searchBinding.nothingFoundLayout.visibility = View.GONE
+        searchBinding.connectionProblemsLayout.visibility = View.GONE
     }
 
     private fun doRefresh() {

@@ -6,24 +6,20 @@ import android.content.res.Configuration
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.Switch
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
 
+    private lateinit var settingsBinding: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-
-        val backButton = findViewById<ImageButton>(R.id.backArrowSettings)
-        val switchThemes = findViewById<Switch>(R.id.switchThemeSettings)
-        val shareButton = findViewById<ImageButton>(R.id.shareSettings)
-        val supportButton = findViewById<ImageButton>(R.id.supportSettings)
-        val userAgreementButton = findViewById<ImageButton>(R.id.userAgreementSettings)
+        settingsBinding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(settingsBinding.root)
 
         // кнопка "назад"
-        backButton.setOnClickListener {
+        settingsBinding.backArrowSettings.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 
@@ -34,13 +30,13 @@ class SettingsActivity : AppCompatActivity() {
 
         // проверка текущей темы и установка положения переключателя
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        switchThemes.isChecked = when (currentNightMode) {
+        settingsBinding.switchThemeSettings.isChecked = when (currentNightMode) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false
             else -> switchState
         }
 
-        switchThemes.setOnCheckedChangeListener { _, isChecked ->
+        settingsBinding.switchThemeSettings.setOnCheckedChangeListener { _, isChecked ->
             AppCompatDelegate.setDefaultNightMode(
                 if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
                 else AppCompatDelegate.MODE_NIGHT_NO
@@ -62,7 +58,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val shareIntent = Intent.createChooser(sendIntent, null)
 
-        shareButton.setOnClickListener{
+        settingsBinding.shareSettings.setOnClickListener{
             startActivity(shareIntent)
         }
 
@@ -74,7 +70,7 @@ class SettingsActivity : AppCompatActivity() {
             putExtra(Intent.EXTRA_TEXT, getString(R.string.support_email_body))
         }
 
-        supportButton.setOnClickListener{
+        settingsBinding.supportSettings.setOnClickListener{
             startActivity(supportIntent)
         }
 
@@ -82,7 +78,7 @@ class SettingsActivity : AppCompatActivity() {
         val webpage: Uri = Uri.parse(getString(R.string.user_agreement_link))
         val intent = Intent(Intent.ACTION_VIEW, webpage)
 
-        userAgreementButton.setOnClickListener {
+        settingsBinding.userAgreementSettings.setOnClickListener {
             startActivity(intent)
         }
 
