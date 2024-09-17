@@ -2,6 +2,7 @@
 <resources>
     <dimen name="primary_menu_text">16sp</dimen>
     <dimen name="toolbar_text">22sp</dimen>
+    <dimen name="error_text">20sp</dimen>
     <dimen name="small_text">12sp</dimen>
     <dimen name="toolbar_primary_margin">12dp</dimen>
     <dimen name="menu_vertical_margin">24dp</dimen>
@@ -9,4 +10,6 @@
     <dimen name="menu_end_margin">8dp</dimen>
     <dimen name="button_radius">16dp</dimen>
     <dimen name="refresh_button_radius">54dp</dimen>
+    <dimen name="padding_4">4dp</dimen>
+    <dimen name="margin_80">80dp</dimen>
 </resources>
