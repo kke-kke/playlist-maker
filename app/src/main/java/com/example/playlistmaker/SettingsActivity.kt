@@ -2,27 +2,24 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.Switch
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
 
+    private lateinit var settingsBinding: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-
-        val backButton = findViewById<ImageButton>(R.id.backArrowSettings)
-        val switchThemes = findViewById<Switch>(R.id.switchThemeSettings)
-        val shareButton = findViewById<ImageButton>(R.id.shareSettings)
-        val supportButton = findViewById<ImageButton>(R.id.supportSettings)
-        val userAgreementButton = findViewById<ImageButton>(R.id.userAgreementSettings)
+        settingsBinding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(settingsBinding.root)
 
         // кнопка "назад"
-        backButton.setOnClickListener {
+        settingsBinding.backArrowSettings.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 
@@ -30,15 +27,26 @@ class SettingsActivity : AppCompatActivity() {
         // получаем состояние switch
         val sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         val switchState = sharedPreferences.getBoolean(SWITCH_STATE, DEFAULT_VALUE)
-        switchThemes.isChecked = switchState
-        switchThemes.setOnCheckedChangeListener { _, isChecked ->
+
+        // проверка текущей темы и установка положения переключателя
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        settingsBinding.switchThemeSettings.isChecked = when (currentNightMode) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            else -> switchState
+        }
+
+        settingsBinding.switchThemeSettings.setOnCheckedChangeListener { _, isChecked ->
             AppCompatDelegate.setDefaultNightMode(
                 if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
                 else AppCompatDelegate.MODE_NIGHT_NO
             )
+
             val editor = sharedPreferences.edit()
             editor.putBoolean(SWITCH_STATE, isChecked)
             editor.apply()
+
+            recreate()
         }
 
         // поделиться приложением
@@ -50,7 +58,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val shareIntent = Intent.createChooser(sendIntent, null)
 
-        shareButton.setOnClickListener{
+        settingsBinding.shareSettings.setOnClickListener{
             startActivity(shareIntent)
         }
 
@@ -62,7 +70,7 @@ class SettingsActivity : AppCompatActivity() {
             putExtra(Intent.EXTRA_TEXT, getString(R.string.support_email_body))
         }
 
-        supportButton.setOnClickListener{
+        settingsBinding.supportSettings.setOnClickListener{
             startActivity(supportIntent)
         }
 
@@ -70,7 +78,7 @@ class SettingsActivity : AppCompatActivity() {
         val webpage: Uri = Uri.parse(getString(R.string.user_agreement_link))
         val intent = Intent(Intent.ACTION_VIEW, webpage)
 
-        userAgreementButton.setOnClickListener {
+        settingsBinding.userAgreementSettings.setOnClickListener {
             startActivity(intent)
         }
 
