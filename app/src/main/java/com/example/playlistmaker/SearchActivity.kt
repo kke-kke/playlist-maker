@@ -3,6 +3,7 @@ package com.example.playlistmaker
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -63,12 +64,14 @@ class SearchActivity : AppCompatActivity() {
         trackAdapter.tracks = trackList
 
         // поиск на клавиатуре
-        searchBinding.searchBar.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                performSearch(searchBinding.searchBar.text.toString())
-                return@OnEditorActionListener true
+        searchBinding.searchBar.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    performSearch(searchBinding.searchBar.text.toString())
+                    return true
+                }
+                return false
             }
-            false
         })
 
         // повторение последнего запроса при проблемах с сетью
