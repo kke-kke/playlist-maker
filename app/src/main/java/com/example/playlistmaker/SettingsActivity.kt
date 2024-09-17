@@ -1,12 +1,10 @@
 package com.example.playlistmaker
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
@@ -24,28 +22,16 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // переключение темы
-        // получаем состояние switch
-        val sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        val switchState = sharedPreferences.getBoolean(SWITCH_STATE, DEFAULT_VALUE)
-
-        // проверка текущей темы и установка положения переключателя
+        val app = applicationContext as App
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        settingsBinding.switchThemeSettings.isChecked = when (currentNightMode) {
+        settingsBinding.themeSwitcher.isChecked = when (currentNightMode) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false
-            else -> switchState
+            else -> app.darkTheme
         }
 
-        settingsBinding.switchThemeSettings.setOnCheckedChangeListener { _, isChecked ->
-            AppCompatDelegate.setDefaultNightMode(
-                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
-                else AppCompatDelegate.MODE_NIGHT_NO
-            )
-
-            val editor = sharedPreferences.edit()
-            editor.putBoolean(SWITCH_STATE, isChecked)
-            editor.apply()
-
+        settingsBinding.themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
+            app.switchTheme(isChecked)
             recreate()
         }
 
@@ -84,9 +70,4 @@ class SettingsActivity : AppCompatActivity() {
 
     }
 
-    companion object {
-        private const val SWITCH_STATE: String = "SWITCH_STATE"
-        private const val DEFAULT_VALUE = false
-        private const val PREFERENCES = "My_Preferences"
-    }
 }
