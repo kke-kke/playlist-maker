@@ -80,9 +80,7 @@
             android:id="@+id/searchHistoryRecyclerView"
             android:orientation="vertical"
             tools:listitem="@layout/search_result"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:reverseLayout="true"
-            app:stackFromEnd="true" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <Button
             android:id="@+id/clearHistoryButton"

@@ -17,6 +17,7 @@ class TrackSearchHistoryAdapter : RecyclerView.Adapter<TrackViewHolder> () {
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position])
+        val reverseIndex = tracks.size - 1 - position
+        holder.bind(tracks[reverseIndex])
     }
 }

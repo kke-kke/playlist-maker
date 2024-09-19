@@ -44,7 +44,6 @@ class SearchActivity : AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         layoutManager.reverseLayout = true
-        layoutManager.stackFromEnd = true
         searchBinding.searchHistoryRecyclerView.layoutManager = layoutManager
 
         // кнопка "назад"
