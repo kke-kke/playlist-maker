@@ -13,8 +13,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,6 +27,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var trackHistoryAdapter: TrackSearchHistoryAdapter
     private lateinit var historyTrackList: ArrayList<Track>
+    private lateinit var searchHistory: SearchHistory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,7 +94,10 @@ class SearchActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE)
 
-        historyTrackList = loadTrackHistory()
+        // инициализация класса истории поиска
+        searchHistory = SearchHistory(sharedPreferences)
+
+        historyTrackList = searchHistory.loadTrackHistory()
         trackHistoryAdapter.tracks = historyTrackList
 
         searchBinding.searchBar.addTextChangedListener(object : TextWatcher {
@@ -117,9 +119,9 @@ class SearchActivity : AppCompatActivity() {
         })
 
         trackAdapter.onItemClick = { track ->
-            addTrackToHistory(track)
+            searchHistory.addTrackToHistory(track)
 
-            trackHistoryAdapter.tracks = loadTrackHistory()
+            trackHistoryAdapter.tracks = searchHistory.loadTrackHistory()
             trackHistoryAdapter.notifyDataSetChanged()
 
         }
@@ -135,61 +137,11 @@ class SearchActivity : AppCompatActivity() {
 
         // кнопка "очистить историю"
         searchBinding.clearHistoryButton.setOnClickListener {
-            sharedPreferences.edit()
-                .remove(SEARCH_HISTORY)
-                .apply()
+            searchHistory.clearHistory()
 
             trackHistoryAdapter.tracks.clear()
             trackHistoryAdapter.notifyDataSetChanged()
         }
-    }
-
-    private fun saveTrackHistory(tracks: List<Track>) {
-        sharedPreferences.edit()
-            .putString(SEARCH_HISTORY, Gson().toJson(tracks))
-            .apply()
-    }
-
-    private fun loadTrackHistory(): ArrayList<Track> {
-        val tracksJson = sharedPreferences.getString(SEARCH_HISTORY, null)
-        return if (tracksJson != null) {
-            val type = object : TypeToken<ArrayList<Track>>() {}.type
-            Gson().fromJson(tracksJson, type) ?: arrayListOf()
-        } else {
-            arrayListOf()
-        }
-    }
-
-    private fun addTrackToHistory(newTrack: Track) {
-        val trackHistoryList = loadTrackHistory()
-
-        val existingTrackIndex = trackHistoryList.indexOfFirst { it.trackId == newTrack.trackId }
-
-        // если трек существует, удаляем его из списка
-        if (existingTrackIndex != -1) {
-            trackHistoryList.removeAt(existingTrackIndex)
-        }
-
-        trackHistoryList.add(0, newTrack)
-
-        // если список больше 10, удаляем последний элемент
-        if (trackHistoryList.size > 10) {
-            trackHistoryList.removeAt(trackHistoryList.size - 1)
-        }
-
-        saveTrackHistory(trackHistoryList)
-    }
-
-    fun showHistoryLayout() {
-        searchBinding.searchHistoryLayout.show()
-        searchBinding.hintTextView.show()
-        searchBinding.clearHistoryButton.show()
-    }
-
-    fun hideHistoryLayout() {
-        searchBinding.searchHistoryLayout.gone()
-        searchBinding.hintTextView.gone()
-        searchBinding.clearHistoryButton.gone()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -262,6 +214,18 @@ class SearchActivity : AppCompatActivity() {
         searchBinding.connectionProblemsLayout.gone()
     }
 
+    private fun showHistoryLayout() {
+        searchBinding.searchHistoryLayout.show()
+        searchBinding.hintTextView.show()
+        searchBinding.clearHistoryButton.show()
+    }
+
+    private fun hideHistoryLayout() {
+        searchBinding.searchHistoryLayout.gone()
+        searchBinding.hintTextView.gone()
+        searchBinding.clearHistoryButton.gone()
+    }
+
     private fun doRefresh() {
         performSearch(lastSearch)
     }
@@ -277,7 +241,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_TEXT: String = "SEARCH"
         private const val DEFAULT_VALUE = ""
-        private const val TRACK_ID = "TRACK_ID"
         private const val SEARCH_HISTORY = "SEARCH_HISTORY"
     }
 
