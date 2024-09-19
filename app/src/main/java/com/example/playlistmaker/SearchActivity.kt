@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,7 +11,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,15 +26,27 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackAdapter: TrackAdapter
     private var trackList = ArrayList<Track>()
     private var lastSearch: String = ""
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var trackHistoryAdapter: TrackSearchHistoryAdapter
+    private lateinit var historyTrackList: ArrayList<Track>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         searchBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(searchBinding.root)
 
-        // recyclerView
+        // recyclerView с результатами поиска
         trackAdapter = TrackAdapter()
         searchBinding.searchResultRecyclerView.adapter = trackAdapter
+
+        // recyclerView с историей поиска
+        trackHistoryAdapter = TrackSearchHistoryAdapter()
+        searchBinding.searchHistoryRecyclerView.adapter = trackHistoryAdapter
+
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.reverseLayout = true
+        layoutManager.stackFromEnd = true
+        searchBinding.searchHistoryRecyclerView.layoutManager = layoutManager
 
         // кнопка "назад"
         searchBinding.backArrowSearch.setOnClickListener {
@@ -76,6 +92,104 @@ class SearchActivity : AppCompatActivity() {
 
         // повторение последнего запроса при проблемах с сетью
         searchBinding.refreshButton.setOnClickListener { doRefresh() }
+
+        sharedPreferences = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE)
+
+        historyTrackList = loadTrackHistory()
+        trackHistoryAdapter.tracks = historyTrackList
+
+        searchBinding.searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // empty
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.isNullOrEmpty() && trackHistoryAdapter.tracks.isNotEmpty()) {
+                    showHistoryLayout()
+                } else {
+                    hideHistoryLayout()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // empty
+            }
+        })
+
+        trackAdapter.onItemClick = { track ->
+            addTrackToHistory(track)
+
+            trackHistoryAdapter.tracks = loadTrackHistory()
+            trackHistoryAdapter.notifyDataSetChanged()
+
+        }
+
+        // отслеживание фокуса на поисковую строку
+        searchBinding.searchBar.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && searchBinding.searchBar.text?.isEmpty() == true && trackHistoryAdapter.tracks.isNotEmpty()) {
+                showHistoryLayout()
+            } else {
+                hideHistoryLayout()
+            }
+        }
+
+        // кнопка "очистить историю"
+        searchBinding.clearHistoryButton.setOnClickListener {
+            sharedPreferences.edit()
+                .remove(SEARCH_HISTORY)
+                .apply()
+
+            trackHistoryAdapter.tracks.clear()
+            trackHistoryAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun saveTrackHistory(tracks: List<Track>) {
+        sharedPreferences.edit()
+            .putString(SEARCH_HISTORY, Gson().toJson(tracks))
+            .apply()
+    }
+
+    private fun loadTrackHistory(): ArrayList<Track> {
+        val tracksJson = sharedPreferences.getString(SEARCH_HISTORY, null)
+        return if (tracksJson != null) {
+            val type = object : TypeToken<ArrayList<Track>>() {}.type
+            Gson().fromJson(tracksJson, type) ?: arrayListOf()
+        } else {
+            arrayListOf()
+        }
+    }
+
+    private fun addTrackToHistory(newTrack: Track) {
+        val trackHistoryList = loadTrackHistory()
+
+        val existingTrackIndex = trackHistoryList.indexOfFirst { it.trackId == newTrack.trackId }
+
+        // если трек существует, удаляем его из списка
+        if (existingTrackIndex != -1) {
+            trackHistoryList.removeAt(existingTrackIndex)
+        }
+
+        trackHistoryList.add(0, newTrack)
+
+        // если список больше 10, удаляем последний элемент
+        if (trackHistoryList.size > 10) {
+            trackHistoryList.removeAt(trackHistoryList.size - 1)
+        }
+
+        saveTrackHistory(trackHistoryList)
+    }
+
+    fun showHistoryLayout() {
+        searchBinding.searchHistoryLayout.show()
+        searchBinding.hintTextView.show()
+        searchBinding.clearHistoryButton.show()
+    }
+
+    fun hideHistoryLayout() {
+        searchBinding.searchHistoryLayout.gone()
+        searchBinding.hintTextView.gone()
+        searchBinding.clearHistoryButton.gone()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -163,6 +277,8 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_TEXT: String = "SEARCH"
         private const val DEFAULT_VALUE = ""
+        private const val TRACK_ID = "TRACK_ID"
+        private const val SEARCH_HISTORY = "SEARCH_HISTORY"
     }
 
 }
