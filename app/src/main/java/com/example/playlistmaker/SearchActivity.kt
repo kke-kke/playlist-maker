@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.Constants.SEARCH_HISTORY
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -117,12 +118,21 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
+        // добавление трека в историю из результатов поиска
         trackAdapter.onItemClick = { track ->
             searchHistory.addTrackToHistory(track)
 
             trackHistoryAdapter.tracks = searchHistory.loadTrackHistory()
             trackHistoryAdapter.notifyDataSetChanged()
 
+        }
+
+        // клик на трек в истории поиска
+        trackHistoryAdapter.onItemClick = { track ->
+            searchHistory.addTrackToHistory(track)
+
+            trackHistoryAdapter.tracks = searchHistory.loadTrackHistory()
+            trackHistoryAdapter.notifyDataSetChanged()
         }
 
         // отслеживание фокуса на поисковую строку
@@ -140,6 +150,8 @@ class SearchActivity : AppCompatActivity() {
 
             trackHistoryAdapter.tracks.clear()
             trackHistoryAdapter.notifyDataSetChanged()
+
+            hideHistoryLayout()
         }
     }
 
@@ -240,7 +252,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_TEXT: String = "SEARCH"
         private const val DEFAULT_VALUE = ""
-        private const val SEARCH_HISTORY = "SEARCH_HISTORY"
     }
 
 }
