@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.SharedPreferences
+import com.example.playlistmaker.Constants.SEARCH_HISTORY
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -49,7 +50,6 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
     }
 
     companion object {
-        private const val SEARCH_HISTORY = "SEARCH_HISTORY"
         private const val MAX_HISTORY_SIZE = 10
     }
 
