@@ -90,7 +90,7 @@
             android:gravity="center"
             android:text="@string/clear_history"
             android:paddingVertical="@dimen/padding_4"
-            android:paddingHorizontal="@dimen/menu_end_margin"
+            android:paddingHorizontal="@dimen/menu_primary_margin"
             style="@style/RefreshSearchButton"/>
 
     </LinearLayout>
