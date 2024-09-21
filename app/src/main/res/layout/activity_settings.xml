@@ -29,27 +29,15 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <FrameLayout
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/themeSwitcher"
+        android:text="@string/dark_theme"
         android:layout_marginVertical="@dimen/menu_vertical_margin"
         android:layout_marginStart="@dimen/menu_primary_margin"
-        android:layout_marginEnd="@dimen/menu_end_margin" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="@string/dark_theme"
-            style="@style/MenuItemTextView" />
-
-        <Switch
-            android:id="@+id/switchThemeSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end" />
-
-    </FrameLayout>
+        android:layout_marginEnd="@dimen/menu_end_margin"
+        style="@style/MenuItemTextView" />
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.playlistmaker.Constants.SEARCH_HISTORY
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,15 +25,27 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackAdapter: TrackAdapter
     private var trackList = ArrayList<Track>()
     private var lastSearch: String = ""
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var trackHistoryAdapter: TrackSearchHistoryAdapter
+    private lateinit var historyTrackList: ArrayList<Track>
+    private lateinit var searchHistory: SearchHistory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         searchBinding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(searchBinding.root)
 
-        // recyclerView
+        // recyclerView с результатами поиска
         trackAdapter = TrackAdapter()
         searchBinding.searchResultRecyclerView.adapter = trackAdapter
+
+        // recyclerView с историей поиска
+        trackHistoryAdapter = TrackSearchHistoryAdapter()
+        searchBinding.searchHistoryRecyclerView.adapter = trackHistoryAdapter
+
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.reverseLayout = true
+        searchBinding.searchHistoryRecyclerView.layoutManager = layoutManager
 
         // кнопка "назад"
         searchBinding.backArrowSearch.setOnClickListener {
@@ -76,6 +91,68 @@ class SearchActivity : AppCompatActivity() {
 
         // повторение последнего запроса при проблемах с сетью
         searchBinding.refreshButton.setOnClickListener { doRefresh() }
+
+        sharedPreferences = getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE)
+
+        // инициализация класса истории поиска
+        searchHistory = SearchHistory(sharedPreferences)
+
+        historyTrackList = searchHistory.loadTrackHistory()
+        trackHistoryAdapter.tracks = historyTrackList
+
+        searchBinding.searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // empty
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.isNullOrEmpty() && trackHistoryAdapter.tracks.isNotEmpty()) {
+                    showHistoryLayout()
+                } else {
+                    hideHistoryLayout()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // empty
+            }
+        })
+
+        // добавление трека в историю из результатов поиска
+        trackAdapter.onItemClick = { track ->
+            searchHistory.addTrackToHistory(track)
+
+            trackHistoryAdapter.tracks = searchHistory.loadTrackHistory()
+            trackHistoryAdapter.notifyDataSetChanged()
+
+        }
+
+        // клик на трек в истории поиска
+        trackHistoryAdapter.onItemClick = { track ->
+            searchHistory.addTrackToHistory(track)
+
+            trackHistoryAdapter.tracks = searchHistory.loadTrackHistory()
+            trackHistoryAdapter.notifyDataSetChanged()
+        }
+
+        // отслеживание фокуса на поисковую строку
+        searchBinding.searchBar.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && searchBinding.searchBar.text?.isEmpty() == true && trackHistoryAdapter.tracks.isNotEmpty()) {
+                showHistoryLayout()
+            } else {
+                hideHistoryLayout()
+            }
+        }
+
+        // кнопка "очистить историю"
+        searchBinding.clearHistoryButton.setOnClickListener {
+            searchHistory.clearHistory()
+
+            trackHistoryAdapter.tracks.clear()
+            trackHistoryAdapter.notifyDataSetChanged()
+
+            hideHistoryLayout()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -146,6 +223,18 @@ class SearchActivity : AppCompatActivity() {
         searchBinding.errorLayout.gone()
         searchBinding.nothingFoundLayout.gone()
         searchBinding.connectionProblemsLayout.gone()
+    }
+
+    private fun showHistoryLayout() {
+        searchBinding.searchHistoryLayout.show()
+        searchBinding.hintTextView.show()
+        searchBinding.clearHistoryButton.show()
+    }
+
+    private fun hideHistoryLayout() {
+        searchBinding.searchHistoryLayout.gone()
+        searchBinding.hintTextView.gone()
+        searchBinding.clearHistoryButton.gone()
     }
 
     private fun doRefresh() {

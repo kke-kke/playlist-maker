@@ -58,6 +58,44 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <LinearLayout
+        android:id="@+id/searchHistoryLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/hintTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/you_searched"
+            style="@style/SearchErrorText"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/searchHistoryRecyclerView"
+            android:orientation="vertical"
+            tools:listitem="@layout/search_result"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <Button
+            android:id="@+id/clearHistoryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/clear_history"
+            android:paddingVertical="@dimen/padding_4"
+            android:paddingHorizontal="@dimen/menu_primary_margin"
+            style="@style/RefreshSearchButton"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/error_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
