@@ -15,15 +15,24 @@ class PlayerActivity : AppCompatActivity() {
         val playerBinding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(playerBinding.root)
 
-        val track = intent.getSerializableExtra("TRACK") as Track
+        // кнопка "назад"
+        playerBinding.backButtonPlayer.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
-        with(playerBinding) {
-//            Glide.with(this)
-//                .load(track.getCoverArtwork())
-//                .placeholder(R.drawable.ic_mock_cover)
-//                .fitCenter()
-//                .apply(RequestOptions.bitmapTransform(RoundedCorners(4)))
-//                .into(albumCoverImage)
+        // получение трека из предыдущей активити
+        val track = intent.getSerializableExtra("TRACK") as Track
+        bindTrack(playerBinding, track)
+    }
+
+    private fun bindTrack(binding: ActivityPlayerBinding, track: Track) {
+        with(binding) {
+            Glide.with(binding.albumCoverImage)
+                .load(track.getCoverArtwork())
+                .placeholder(R.drawable.ic_mock_cover)
+                .fitCenter()
+                .apply(RequestOptions.bitmapTransform(RoundedCorners(4)))
+                .into(albumCoverImage)
 
             songNameTextView.text = track.trackName
             songArtistTextView.text = track.artistName
