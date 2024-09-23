@@ -20,6 +20,20 @@
         app:layout_constraintGuide_percent="0.95" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/center_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/bottom_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +41,7 @@
         app:layout_constraintGuide_end="@dimen/menu_vertical_margin" />
 
     <ImageButton
-        android:id="@+id/menu_button"
+        android:id="@+id/backButtonPlayer"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="@dimen/menu_end_margin"
@@ -41,68 +55,81 @@
         android:id="@+id/albumCoverImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/margin_80"
         android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintWidth_percent="0.65"
-        app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-        app:layout_constraintStart_toStartOf="@+id/left_guideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/left_guideline"
+        app:layout_constraintTop_toTopOf="@id/top_guideline"
+        app:layout_constraintBottom_toTopOf="@id/center_guideline"
+        app:layout_constraintEnd_toStartOf="@id/right_guideline"/>
 
     <!-- Song name & singer -->
     <TextView
         android:id="@+id/songNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
+        app:layout_constrainedWidth="true"
         android:ellipsize="end"
-        app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-        app:layout_constraintStart_toStartOf="@+id/left_guideline"
-        app:layout_constraintTop_toBottomOf="@id/albumCoverImage"
+        app:layout_constraintStart_toStartOf="@id/left_guideline"
+        app:layout_constraintTop_toBottomOf="@id/center_guideline"
+        app:layout_constraintBottom_toTopOf="@id/songArtistTextView"
         style="@style/BigTextStyle"/>
 
     <TextView
         android:id="@+id/songArtistTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
+        app:layout_constrainedWidth="true"
         android:ellipsize="end"
-        app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-        app:layout_constraintStart_toStartOf="@+id/left_guideline"
+        app:layout_constraintStart_toStartOf="@id/left_guideline"
         app:layout_constraintTop_toBottomOf="@id/songNameTextView"
+        app:layout_constraintBottom_toTopOf="@id/top_buttons_guideline"
         style="@style/SmallTextStyle"/>
 
     <!-- Buttons & time code -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_buttons_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottom_buttons_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
     <ImageButton
         android:id="@+id/playButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_40"
         android:background="@null"
         android:src="@drawable/play"
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
         app:layout_constraintStart_toStartOf="@id/left_guideline"
-        app:layout_constraintTop_toBottomOf="@id/songArtistTextView" />
+        app:layout_constraintTop_toTopOf="@id/top_buttons_guideline"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_buttons_guideline"/>
 
     <ImageButton
         android:id="@+id/addToLibraryButton"
         android:layout_width="@dimen/refresh_button_radius"
         android:layout_height="@dimen/refresh_button_radius"
-        android:layout_marginTop="@dimen/refresh_button_radius"
         android:src="@drawable/add_to_lib"
         android:background="@drawable/round_button"
-        app:layout_constraintTop_toBottomOf="@id/songArtistTextView"
+        app:layout_constraintTop_toTopOf="@id/top_buttons_guideline"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_buttons_guideline"
         app:layout_constraintEnd_toStartOf="@id/playButton"
-        app:layout_constraintStart_toStartOf="@+id/left_guideline" />
+        app:layout_constraintStart_toStartOf="@+id/left_guideline"/>
 
     <ImageButton
         android:id="@+id/addToFavouritesButton"
         android:layout_width="@dimen/refresh_button_radius"
         android:layout_height="@dimen/refresh_button_radius"
-        android:layout_marginTop="@dimen/refresh_button_radius"
         android:src="@drawable/favorite_border"
         android:background="@drawable/round_button"
-        app:layout_constraintTop_toBottomOf="@id/songArtistTextView"
+        app:layout_constraintTop_toTopOf="@id/top_buttons_guideline"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_buttons_guideline"
         app:layout_constraintStart_toEndOf="@id/playButton"
         app:layout_constraintEnd_toEndOf="@+id/right_guideline" />
 
@@ -113,13 +140,20 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:text="0:30"
-        android:layout_marginTop="@dimen/padding_4"
-        app:layout_constraintTop_toBottomOf="@id/playButton"
+        android:layout_marginTop="@dimen/toolbar_primary_margin"
+        app:layout_constraintTop_toBottomOf="@id/bottom_buttons_guideline"
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
         app:layout_constraintStart_toStartOf="@id/left_guideline"
         style="@style/SmallTextStyle" />
 
     <!-- Details left -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_details_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.77" />
+
     <TextView
         android:id="@+id/songCountryTextView"
         android:layout_width="wrap_content"
@@ -127,6 +161,7 @@
         android:text="@string/song_origin"
         app:layout_constraintStart_toStartOf="@id/left_guideline"
         app:layout_constraintBottom_toTopOf="@id/bottom_guideline"
+        app:layout_constraintTop_toBottomOf="@id/songGenreTextView"
         android:textColor="@color/icon_color"
         style="@style/SmallTextRecycler" />
 
@@ -135,9 +170,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/song_genre"
-        android:layout_marginVertical="@dimen/menu_end_margin"
         app:layout_constraintStart_toStartOf="@id/left_guideline"
         app:layout_constraintBottom_toTopOf="@id/songCountryTextView"
+        app:layout_constraintTop_toBottomOf="@id/songYearTextView"
         android:textColor="@color/icon_color"
         style="@style/SmallTextRecycler" />
 
@@ -146,9 +181,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/song_year"
-        android:layout_marginVertical="@dimen/menu_end_margin"
         app:layout_constraintStart_toStartOf="@id/left_guideline"
         app:layout_constraintBottom_toTopOf="@id/songGenreTextView"
+        app:layout_constraintTop_toBottomOf="@id/songAlbumTextView"
         android:textColor="@color/icon_color"
         style="@style/SmallTextRecycler" />
 
@@ -157,9 +192,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/album_name"
-        android:layout_marginVertical="@dimen/menu_end_margin"
         app:layout_constraintStart_toStartOf="@id/left_guideline"
         app:layout_constraintBottom_toTopOf="@id/songYearTextView"
+        app:layout_constraintTop_toBottomOf="@id/songLengthTextView"
         android:textColor="@color/icon_color"
         style="@style/SmallTextRecycler" />
 
@@ -168,9 +203,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/song_length"
-        android:layout_marginVertical="@dimen/menu_end_margin"
         app:layout_constraintStart_toStartOf="@id/left_guideline"
         app:layout_constraintBottom_toTopOf="@id/songAlbumTextView"
+        app:layout_constraintTop_toBottomOf="@id/top_details_guideline"
         android:textColor="@color/icon_color"
         style="@style/SmallTextRecycler" />
 
@@ -179,54 +214,45 @@
         android:id="@+id/songCountryValueTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
         app:layout_constraintBottom_toTopOf="@id/bottom_guideline"
+        app:layout_constraintTop_toBottomOf="@id/songGenreValueTextView"
         style="@style/SmallTextPrimary" />
 
     <TextView
         android:id="@+id/songGenreValueTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:layout_marginVertical="@dimen/menu_end_margin"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
-        app:layout_constraintBottom_toTopOf="@id/songCountryTextView"
+        app:layout_constraintBottom_toTopOf="@id/songCountryValueTextView"
+        app:layout_constraintTop_toBottomOf="@id/songYearValueTextView"
         style="@style/SmallTextPrimary" />
 
     <TextView
         android:id="@+id/songYearValueTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:layout_marginVertical="@dimen/menu_end_margin"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
-        app:layout_constraintBottom_toTopOf="@id/songGenreTextView"
+        app:layout_constraintBottom_toTopOf="@id/songGenreValueTextView"
+        app:layout_constraintTop_toBottomOf="@id/songAlbumValueTextView"
         style="@style/SmallTextPrimary" />
 
     <TextView
         android:id="@+id/songAlbumValueTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:layout_marginVertical="@dimen/menu_end_margin"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
-        app:layout_constraintBottom_toTopOf="@id/songYearTextView"
+        app:layout_constraintBottom_toTopOf="@id/songYearValueTextView"
+        app:layout_constraintTop_toBottomOf="@id/songLengthValueTextView"
         style="@style/SmallTextPrimary" />
 
     <TextView
         android:id="@+id/songLengthValueTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:layout_marginVertical="@dimen/menu_end_margin"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
-        app:layout_constraintBottom_toTopOf="@id/songAlbumTextView"
+        app:layout_constraintBottom_toTopOf="@id/songAlbumValueTextView"
+        app:layout_constraintTop_toBottomOf="@id/top_details_guideline"
         style="@style/SmallTextPrimary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
