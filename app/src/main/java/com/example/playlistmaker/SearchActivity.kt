@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -17,6 +18,7 @@ import com.example.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.Serializable
 
 class SearchActivity : AppCompatActivity() {
     private var searchValue: String = DEFAULT_VALUE
@@ -118,9 +120,13 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
+        val playerIntent = Intent(this, PlayerActivity::class.java)
         // добавление трека в историю из результатов поиска
         trackAdapter.onItemClick = { track ->
             searchHistory.addTrackToHistory(track)
+
+            playerIntent.putExtra("TRACK", track as Serializable)
+            startActivity(playerIntent)
 
             trackHistoryAdapter.tracks = searchHistory.loadTrackHistory()
             trackHistoryAdapter.notifyDataSetChanged()
@@ -130,6 +136,9 @@ class SearchActivity : AppCompatActivity() {
         // клик на трек в истории поиска
         trackHistoryAdapter.onItemClick = { track ->
             searchHistory.addTrackToHistory(track)
+
+            playerIntent.putExtra("TRACK", track as Serializable)
+            startActivity(playerIntent)
 
             trackHistoryAdapter.tracks = searchHistory.loadTrackHistory()
             trackHistoryAdapter.notifyDataSetChanged()
