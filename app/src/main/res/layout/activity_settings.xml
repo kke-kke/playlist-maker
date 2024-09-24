@@ -29,7 +29,7 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
+    <androidx.appcompat.widget.SwitchCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/themeSwitcher"
@@ -37,6 +37,8 @@
         android:layout_marginVertical="@dimen/menu_vertical_margin"
         android:layout_marginStart="@dimen/menu_primary_margin"
         android:layout_marginEnd="@dimen/menu_end_margin"
+        app:thumbTint="@drawable/thumb"
+        app:trackTint="@drawable/track"
         style="@style/MenuItemTextView" />
 
     <FrameLayout
