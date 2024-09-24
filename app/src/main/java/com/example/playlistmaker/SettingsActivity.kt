@@ -17,7 +17,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(settingsBinding.root)
 
         // кнопка "назад"
-        settingsBinding.backArrowSettings.setOnClickListener {
+        settingsBinding.settingsToolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 

@@ -50,7 +50,7 @@ class SearchActivity : AppCompatActivity() {
         searchBinding.searchHistoryRecyclerView.layoutManager = layoutManager
 
         // кнопка "назад"
-        searchBinding.backArrowSearch.setOnClickListener {
+        searchBinding.searchToolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 

@@ -19,8 +19,7 @@
         <item name="backgroundTint">?attr/colorButtonNormal</item>
         <item name="cornerRadius">@dimen/button_radius</item>
     </style>
-    <style name="ToolbarTextView">
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    <style name="ToolbarTextView" parent="Base.TextAppearance.AppCompat.Title">
         <item name="android:textSize">@dimen/toolbar_text</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
@@ -30,8 +29,7 @@
         <item name="android:background">?attr/colorPrimary</item>
     </style>
     <style name="BackToolbarButton">
-        <item name="android:src">@drawable/ic_arrow_back</item>
-        <item name="tint">?attr/colorOnPrimary</item>
+        <item name="navigationIconTint">?attr/colorOnPrimary</item>
         <item name="android:background">?attr/colorPrimary</item>
     </style>
     <!--    Settings menu   -->

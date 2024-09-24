@@ -5,29 +5,18 @@
     android:layout_height="match_parent"
     style="@style/WhiteLinearLayout">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/settingsToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp" >
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/toolbar_primary_margin"
-            android:id="@+id/backArrowSettings"
-            style="@style/BackToolbarButton" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="@dimen/toolbar_primary_margin"
-            android:layout_marginStart="@dimen/toolbar_primary_margin"
-            android:text="@string/settings"
-            android:textColor="?attr/colorOnPrimary"
-            style="@style/ToolbarTextView" />
-
-    </androidx.appcompat.widget.Toolbar>
+        app:title="@string/settings"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:titleTextAppearance="@style/ToolbarTextView"
+        app:titleTextColor="?attr/colorOnPrimary"
+        app:titleMarginTop="10dp"
+        app:titleMarginBottom="@dimen/toolbar_primary_margin"
+        app:titleMarginStart="@dimen/toolbar_primary_margin"
+        style="@style/BackToolbarButton" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:layout_width="match_parent"

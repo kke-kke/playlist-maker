@@ -16,7 +16,9 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(playerBinding.root)
 
         // кнопка "назад"
-        playerBinding.backButtonPlayer.setOnClickListener {
+        setSupportActionBar(playerBinding.playerToolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        playerBinding.playerToolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 

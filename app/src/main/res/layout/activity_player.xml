@@ -248,19 +248,12 @@
         app:layout_constraintEnd_toStartOf="@id/right_guideline"/>
 
     <!-- Toolbar with back button -->
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/playerToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/menu_end_margin" >
-
-        <ImageButton
-            android:id="@+id/backButtonPlayer"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/toolbar_primary_margin"
-            style="@style/BackToolbarButton" />
-
-    </androidx.appcompat.widget.Toolbar>
+        app:title=""
+        app:navigationIcon="@drawable/ic_arrow_back"
+        style="@style/BackToolbarButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
