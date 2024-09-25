@@ -6,29 +6,18 @@
     android:layout_height="match_parent"
     style="@style/WhiteLinearLayout">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/searchToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/menu_end_margin" >
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/toolbar_primary_margin"
-            android:id="@+id/backArrowSearch"
-            style="@style/BackToolbarButton" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="@dimen/toolbar_primary_margin"
-            android:layout_marginStart="@dimen/toolbar_primary_margin"
-            style="@style/ToolbarTextView"
-            android:text="@string/search"
-            android:textColor="?attr/colorOnPrimary" />
-
-    </androidx.appcompat.widget.Toolbar>
+        app:title="@string/search"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:titleTextAppearance="@style/ToolbarTextView"
+        app:titleTextColor="?attr/colorOnPrimary"
+        app:titleMarginTop="10dp"
+        app:titleMarginBottom="@dimen/toolbar_primary_margin"
+        app:titleMarginStart="@dimen/toolbar_primary_margin"
+        style="@style/BackToolbarButton" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -68,6 +57,9 @@
             android:id="@+id/hintTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/menu_primary_margin"
+            android:layout_marginTop="@dimen/dimen_40"
+            android:layout_marginBottom="@dimen/menu_vertical_margin"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/you_searched"
@@ -86,6 +78,7 @@
             android:id="@+id/clearHistoryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/menu_vertical_margin"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/clear_history"

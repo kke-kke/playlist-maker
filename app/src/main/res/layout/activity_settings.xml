@@ -5,38 +5,30 @@
     android:layout_height="match_parent"
     style="@style/WhiteLinearLayout">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/settingsToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp" >
+        app:title="@string/settings"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:titleTextAppearance="@style/ToolbarTextView"
+        app:titleTextColor="?attr/colorOnPrimary"
+        app:titleMarginTop="10dp"
+        app:titleMarginBottom="@dimen/toolbar_primary_margin"
+        app:titleMarginStart="@dimen/toolbar_primary_margin"
+        style="@style/BackToolbarButton" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/toolbar_primary_margin"
-            android:id="@+id/backArrowSettings"
-            style="@style/BackToolbarButton" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="@dimen/toolbar_primary_margin"
-            android:layout_marginStart="@dimen/toolbar_primary_margin"
-            android:text="@string/settings"
-            android:textColor="?attr/colorOnPrimary"
-            style="@style/ToolbarTextView" />
-
-    </androidx.appcompat.widget.Toolbar>
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
+    <androidx.appcompat.widget.SwitchCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/themeSwitcher"
         android:text="@string/dark_theme"
-        android:layout_marginVertical="@dimen/menu_vertical_margin"
+        android:layout_marginTop="@dimen/menu_vertical_margin"
+        android:layout_marginBottom="@dimen/menu_primary_margin"
         android:layout_marginStart="@dimen/menu_primary_margin"
         android:layout_marginEnd="@dimen/menu_end_margin"
+        app:thumbTint="@drawable/thumb"
+        app:trackTint="@drawable/track"
         style="@style/MenuItemTextView" />
 
     <FrameLayout
