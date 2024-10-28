@@ -110,11 +110,11 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
-        val playerIntent = Intent(this, PlayerActivity::class.java)
         // добавление трека в историю из результатов поиска
         trackAdapter.onItemClick = { track ->
             searchHistory.addTrackToHistory(track)
 
+            val playerIntent = Intent(this, PlayerActivity::class.java)
             playerIntent.putExtra("TRACK", track as Serializable)
             startActivity(playerIntent)
 
@@ -127,6 +127,7 @@ class SearchActivity : AppCompatActivity() {
         trackHistoryAdapter.onItemClick = { track ->
             searchHistory.addTrackToHistory(track)
 
+            val playerIntent = Intent(this, PlayerActivity::class.java)
             playerIntent.putExtra("TRACK", track as Serializable)
             startActivity(playerIntent)
 
