@@ -14,6 +14,8 @@ data class Track(
     val trackTime: Long, // Продолжительность трека
     @SerializedName("artworkUrl100")
     val artworkUrl100: String, // Ссылка на изображение обложки
+    @SerializedName("previewUrl")
+    val previewUrl: String, // ссылка на отрывок трека
     @SerializedName("collectionName")
     val collectionName: String, // Название альбома
     @SerializedName("releaseDate")
