@@ -30,7 +30,6 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
             android:singleLine="true"
             android:padding="@dimen/menu_end_margin"
             style="@style/SearchEditText"
@@ -162,5 +161,14 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/searchProgressBar"
+        android:layout_marginTop="@dimen/dimen_156"
+        android:layout_width="@dimen/dimen_44"
+        android:layout_height="@dimen/dimen_44"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/main_background_color"
+        android:visibility="gone"/>
 
 </LinearLayout>

@@ -3,14 +3,13 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.Constants.SEARCH_HISTORY
@@ -26,11 +25,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchBinding: ActivitySearchBinding
     private lateinit var trackAdapter: TrackAdapter
     private var trackList = ArrayList<Track>()
-    private var lastSearch: String = ""
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var trackHistoryAdapter: TrackSearchHistoryAdapter
     private lateinit var historyTrackList: ArrayList<Track>
     private lateinit var searchHistory: SearchHistory
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { performSearch() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +66,7 @@ class SearchActivity : AppCompatActivity() {
                     hideRecycler()
                 } else {
                     searchBinding.searchResultRecyclerView.show()
+                    searchDebounce()
                 }
             }
 
@@ -79,17 +80,6 @@ class SearchActivity : AppCompatActivity() {
         searchBinding.searchBar.addTextChangedListener(simpleTextWatcher)
 
         trackAdapter.tracks = trackList
-
-        // поиск на клавиатуре
-        searchBinding.searchBar.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    performSearch(searchBinding.searchBar.text.toString())
-                    return true
-                }
-                return false
-            }
-        })
 
         // повторение последнего запроса при проблемах с сетью
         searchBinding.refreshButton.setOnClickListener { doRefresh() }
@@ -120,11 +110,11 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
-        val playerIntent = Intent(this, PlayerActivity::class.java)
         // добавление трека в историю из результатов поиска
         trackAdapter.onItemClick = { track ->
             searchHistory.addTrackToHistory(track)
 
+            val playerIntent = Intent(this, PlayerActivity::class.java)
             playerIntent.putExtra("TRACK", track as Serializable)
             startActivity(playerIntent)
 
@@ -137,6 +127,7 @@ class SearchActivity : AppCompatActivity() {
         trackHistoryAdapter.onItemClick = { track ->
             searchHistory.addTrackToHistory(track)
 
+            val playerIntent = Intent(this, PlayerActivity::class.java)
             playerIntent.putExtra("TRACK", track as Serializable)
             startActivity(playerIntent)
 
@@ -186,15 +177,16 @@ class SearchActivity : AppCompatActivity() {
         trackList.clear()
     }
 
-    private fun performSearch(query: String) {
+    private fun performSearch() {
         val searchApi = SearchApi.create()
 
-        if (query.isNotEmpty()) {
+        if (searchValue.isNotEmpty()) {
             hideAllMessages()
+            searchBinding.searchProgressBar.show()
 
-            lastSearch = query
-            searchApi.search(query).enqueue(object : Callback<TrackResponse> {
+            searchApi.search(searchValue).enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
+                    searchBinding.searchProgressBar.gone()
                     if (response.code() == 200) {
                         trackList.clear()
                         val results = response.body()?.results
@@ -211,10 +203,16 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    searchBinding.searchProgressBar.gone()
                     showMessage(searchBinding.connectionProblemsLayout)
                 }
             })
         }
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun showMessage(layout: LinearLayout) {
@@ -247,7 +245,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun doRefresh() {
-        performSearch(lastSearch)
+        performSearch()
     }
 
     private fun View.show() {
@@ -261,6 +259,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_TEXT: String = "SEARCH"
         private const val DEFAULT_VALUE = ""
+        private const val SEARCH_DEBOUNCE_DELAY  = 2000L
     }
 
 }

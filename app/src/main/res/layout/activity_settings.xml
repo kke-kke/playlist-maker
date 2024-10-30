@@ -31,75 +31,34 @@
         app:trackTint="@drawable/track"
         style="@style/MenuItemTextView" />
 
-    <FrameLayout
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/shareSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/menu_vertical_margin"
-        android:layout_marginStart="@dimen/menu_primary_margin"
-        android:layout_marginEnd="@dimen/menu_end_margin" >
+        android:drawableEnd="@drawable/ic_share_button"
+        android:paddingHorizontal="@dimen/menu_primary_margin"
+        android:paddingVertical="@dimen/dimen_20"
+        android:text="@string/share"
+        android:textAppearance="@style/MenuItemTextView" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="@string/share"
-            style="@style/MenuItemTextView" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:id="@+id/shareSettings"
-            android:src="@drawable/ic_share_button"
-            style="@style/MenuButton" />
-
-    </FrameLayout>
-
-    <FrameLayout
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/supportSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/menu_vertical_margin"
-        android:layout_marginStart="@dimen/menu_primary_margin"
-        android:layout_marginEnd="@dimen/menu_end_margin" >
+        android:drawableEnd="@drawable/ic_support"
+        android:paddingHorizontal="@dimen/menu_primary_margin"
+        android:paddingVertical="@dimen/dimen_20"
+        android:text="@string/support"
+        android:textAppearance="@style/MenuItemTextView" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="@string/support"
-            style="@style/MenuItemTextView" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:id="@+id/supportSettings"
-            android:src="@drawable/ic_support"
-            style="@style/MenuButton" />
-
-    </FrameLayout>
-
-    <FrameLayout
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/userAgreementSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/menu_vertical_margin"
-        android:layout_marginStart="@dimen/menu_primary_margin"
-        android:layout_marginEnd="@dimen/menu_end_margin" >
+        android:drawableEnd="@drawable/ic_light_arrow"
+        android:paddingHorizontal="@dimen/menu_primary_margin"
+        android:paddingVertical="@dimen/dimen_20"
+        android:text="@string/user_agreement"
+        android:textAppearance="@style/MenuItemTextView" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="@string/user_agreement"
-            style="@style/MenuItemTextView" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:id="@+id/userAgreementSettings"
-            android:src="@drawable/ic_light_arrow"
-            style="@style/MenuButton" />
-
-    </FrameLayout>
 </LinearLayout>
