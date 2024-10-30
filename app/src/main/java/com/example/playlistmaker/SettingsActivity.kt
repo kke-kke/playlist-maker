@@ -1,10 +1,11 @@
 package com.example.playlistmaker
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.playlistmaker.Constants.SETTINGS_PREFERENCES
+import com.example.playlistmaker.Constants.THEME_KEY
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
@@ -23,16 +24,11 @@ class SettingsActivity : AppCompatActivity() {
 
         // переключение темы
         val app = applicationContext as App
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        settingsBinding.themeSwitcher.isChecked = when (currentNightMode) {
-            Configuration.UI_MODE_NIGHT_YES -> true
-            Configuration.UI_MODE_NIGHT_NO -> false
-            else -> app.darkTheme
-        }
+        val sharedPreferences = getSharedPreferences(SETTINGS_PREFERENCES, MODE_PRIVATE)
+        settingsBinding.themeSwitcher.isChecked = sharedPreferences.getBoolean(THEME_KEY, false)
 
         settingsBinding.themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
             app.switchTheme(isChecked)
-            recreate()
         }
 
         // поделиться приложением

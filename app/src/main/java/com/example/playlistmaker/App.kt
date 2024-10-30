@@ -1,37 +1,45 @@
 package com.example.playlistmaker
 
 import android.app.Application
-import android.content.Context
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.Constants.SETTINGS_PREFERENCES
+import com.example.playlistmaker.Constants.THEME_KEY
 
 class App : Application() {
 
-    var darkTheme = false
-
     override fun onCreate() {
         super.onCreate()
-
-        val sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        darkTheme = sharedPreferences.getBoolean(SWITCH_STATE, DEFAULT_VALUE)
-
-        switchTheme(darkTheme)
+        applyThemeFromPreferences()
     }
 
-    fun switchTheme(darkThemeEnabled: Boolean) {
-        darkTheme = darkThemeEnabled
+    private fun applyThemeFromPreferences() {
+        val sharedPreferences = getSharedPreferences(SETTINGS_PREFERENCES, MODE_PRIVATE)
+        val isFirstLaunch = !sharedPreferences.contains(THEME_KEY)
 
-        val sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        sharedPreferences.edit().putBoolean(SWITCH_STATE, darkThemeEnabled).apply()
+        val isDarkThemeEnabled = if (isFirstLaunch) {
+            val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+            sharedPreferences.edit().putBoolean(THEME_KEY, isSystemDarkMode).apply()
+            isSystemDarkMode
+        } else {
+            sharedPreferences.getBoolean(THEME_KEY, false)
+        }
 
         AppCompatDelegate.setDefaultNightMode(
-            if (darkThemeEnabled) AppCompatDelegate.MODE_NIGHT_YES
+            if (isDarkThemeEnabled) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO
         )
     }
 
-    companion object {
-        private const val SWITCH_STATE: String = "SWITCH_STATE"
-        private const val DEFAULT_VALUE = false
-        private const val PREFERENCES = "My_Preferences"
+    fun switchTheme(darkTheme: Boolean) {
+        getSharedPreferences(SETTINGS_PREFERENCES, MODE_PRIVATE).edit()
+            .putBoolean(THEME_KEY, darkTheme)
+            .apply()
+
+        AppCompatDelegate.setDefaultNightMode(
+            if (darkTheme) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
     }
 }
