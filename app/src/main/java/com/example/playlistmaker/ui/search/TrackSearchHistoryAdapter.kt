@@ -1,10 +1,12 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
 
-class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder> () {
+class TrackSearchHistoryAdapter : RecyclerView.Adapter<TrackViewHolder> () {
     var tracks = ArrayList<Track>()
     var onItemClick : ((Track) -> Unit)? = null
 
@@ -18,9 +20,10 @@ class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder> () {
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position])
+        val reverseIndex = tracks.size - 1 - position
+        holder.bind(tracks[reverseIndex])
         holder.itemView.setOnClickListener {
-            onItemClick?.invoke(tracks[position])
+            onItemClick?.invoke(tracks[reverseIndex])
         }
     }
 }
