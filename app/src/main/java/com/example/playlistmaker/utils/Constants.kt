@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.utils
 
 object Constants {
     const val SEARCH_HISTORY = "SEARCH_HISTORY"
