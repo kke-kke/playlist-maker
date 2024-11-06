@@ -16,9 +16,9 @@ import com.example.playlistmaker.utils.Constants.SEARCH_HISTORY
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.models.Resource
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.SearchHistoryViewModel
-import com.example.playlistmaker.presentation.SearchViewModel
-import com.example.playlistmaker.presentation.ViewModelFactory
+import com.example.playlistmaker.presentation.search.SearchHistoryViewModel
+import com.example.playlistmaker.presentation.search.SearchViewModel
+import com.example.playlistmaker.presentation.search.SearchViewModelFactory
 import com.example.playlistmaker.ui.player.PlayerActivity
 import java.io.Serializable
 
@@ -42,8 +42,8 @@ class SearchActivity : AppCompatActivity() {
         searchBinding.searchHistoryRecyclerView.adapter = trackHistoryAdapter
 
         val sharedPreferences = getSharedPreferences(SEARCH_HISTORY, Context.MODE_PRIVATE)
-        searchViewModel = ViewModelProvider(this, ViewModelFactory(sharedPreferences))[SearchViewModel::class.java]
-        searchHistoryViewModel = ViewModelProvider(this, ViewModelFactory(sharedPreferences))[SearchHistoryViewModel::class.java]
+        searchViewModel = ViewModelProvider(this, SearchViewModelFactory(sharedPreferences))[SearchViewModel::class.java]
+        searchHistoryViewModel = ViewModelProvider(this, SearchViewModelFactory(sharedPreferences))[SearchHistoryViewModel::class.java]
 
         initObservers()
 

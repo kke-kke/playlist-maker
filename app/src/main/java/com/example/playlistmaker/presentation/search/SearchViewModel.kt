@@ -1,10 +1,10 @@
-package com.example.playlistmaker.presentation
+package com.example.playlistmaker.presentation.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.domain.api.TrackInteractor
+import com.example.playlistmaker.domain.api.track.TrackInteractor
 import com.example.playlistmaker.domain.models.Resource
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.flow.MutableStateFlow
