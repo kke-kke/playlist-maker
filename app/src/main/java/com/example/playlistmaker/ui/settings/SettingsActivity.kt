@@ -1,11 +1,13 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.settings
 
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.playlistmaker.Constants.SETTINGS_PREFERENCES
-import com.example.playlistmaker.Constants.THEME_KEY
+import com.example.playlistmaker.utils.App
+import com.example.playlistmaker.utils.Constants.SETTINGS_PREFERENCES
+import com.example.playlistmaker.utils.Constants.THEME_KEY
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {

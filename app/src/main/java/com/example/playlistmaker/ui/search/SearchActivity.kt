@@ -12,7 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.Constants.SEARCH_HISTORY
+import com.example.playlistmaker.utils.Constants.SEARCH_HISTORY
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.models.Resource
 import com.example.playlistmaker.domain.models.Track
