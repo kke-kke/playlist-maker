@@ -1,72 +1,54 @@
 package com.example.playlistmaker.ui.player
 
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.player.PlayerState
+import com.example.playlistmaker.presentation.player.PlayerViewModel
+import com.example.playlistmaker.presentation.player.PlayerViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
-
-    private var mediaPlayer = MediaPlayer()
-    private var playerState = STATE_DEFAULT
-    private lateinit var url: String
-    private lateinit var play: ImageButton
-    private lateinit var currentTimestamp: TextView
-    private val playbackHandler = Handler(Looper.getMainLooper())
-    private var playbackRunnable = Runnable { getCurrentPlayback() }
+    private lateinit var viewModel: PlayerViewModel
+    private lateinit var playerBinding: ActivityPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val playerBinding = ActivityPlayerBinding.inflate(layoutInflater)
+        playerBinding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(playerBinding.root)
 
-        // кнопка "назад"
-        setSupportActionBar(playerBinding.playerToolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        playerBinding.playerToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
-
-        // textView текущего момента воспроизведения
-        currentTimestamp = playerBinding.currentLengthTextView
-        currentTimestamp.text = DEFAULT_PLAYBACK
-
-        // получение трека из предыдущей активити
         val track = intent.getSerializableExtra("TRACK") as Track
+        viewModel = ViewModelProvider(this, PlayerViewModelFactory())[PlayerViewModel::class.java]
+
+        viewModel.loadTrack(track)
         bindTrack(playerBinding, track)
 
-        url = track.previewUrl ?: ""
-        if (url.isNotEmpty()) {
-            preparePlayer()
-        } else {
-            Log.e("PlayerActivity", "previewUrl пустой или null.")
+        viewModel.currentPosition.observe(this) { position ->
+            playerBinding.currentLengthTextView.text = position
         }
 
-        play = playerBinding.playButton
-        play.setOnClickListener { playbackControl() }
+        viewModel.playerState.observe(this) { state ->
+            changePlayButton(state)
+        }
+
+        initClickListeners()
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        viewModel.pause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
-        playbackHandler.removeCallbacks(playbackRunnable)
+        viewModel.release()
     }
 
     private fun bindTrack(binding: ActivityPlayerBinding, track: Track) {
@@ -90,64 +72,30 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun preparePlayer() {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            play.isEnabled = true
-            play.setImageResource(R.drawable.play)
-            playerState = STATE_PREPARED
+    private fun initClickListeners() {
+        playerBinding.playButton.setOnClickListener {
+            viewModel.playbackControl()
         }
-        mediaPlayer.setOnCompletionListener {
-            play.setImageResource(R.drawable.play)
-            currentTimestamp.text = DEFAULT_PLAYBACK
-            playerState = STATE_PREPARED
-            playbackHandler.removeCallbacks(playbackRunnable)
+
+        playerBinding.playerToolbar.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 
-    private fun startPlayer() {
-        mediaPlayer.start()
-        play.setImageResource(R.drawable.pause)
-        playerState = STATE_PLAYING
-        playbackHandler.post(playbackRunnable)
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playbackHandler.removeCallbacks(playbackRunnable)
-        play.setImageResource(R.drawable.play)
-        playerState = STATE_PAUSED
-    }
-
-    private fun playbackControl() {
-        when(playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
+    private fun changePlayButton(state: PlayerState) {
+        when (state) {
+            PlayerState.Playing -> {
+                playerBinding.playButton.setImageResource(R.drawable.pause)
+                playerBinding.playButton.isEnabled = true
             }
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
+            PlayerState.Paused, PlayerState.Prepared -> {
+                playerBinding.playButton.setImageResource(R.drawable.play)
+                playerBinding.playButton.isEnabled = true
+            }
+            PlayerState.Default -> {
+                playerBinding.playButton.setImageResource(R.drawable.play)
+                playerBinding.playButton.isEnabled = false
             }
         }
     }
-
-    private fun getCurrentPlayback() {
-        if (playerState == STATE_PLAYING) {
-            currentTimestamp.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-            playbackHandler.postDelayed(playbackRunnable, HANDLER_WAIT)
-        } else {
-            currentTimestamp.text = DEFAULT_PLAYBACK
-        }
-
-    }
-
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val HANDLER_WAIT = 400L
-        private const val DEFAULT_PLAYBACK = "00:00"
-    }
-
 }
