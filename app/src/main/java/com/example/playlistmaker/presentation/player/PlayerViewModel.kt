@@ -84,7 +84,3 @@ class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) 
         playbackHandler.removeCallbacks(playbackRunnable)
     }
 }
-
-enum class PlayerState {
-    Default, Prepared, Playing, Paused
-}
