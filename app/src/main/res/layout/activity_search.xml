@@ -70,6 +70,8 @@
             android:layout_weight="1"
             android:id="@+id/searchHistoryRecyclerView"
             android:orientation="vertical"
+            app:reverseLayout="true"
+            app:stackFromEnd="true"
             tools:listitem="@layout/search_result"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
