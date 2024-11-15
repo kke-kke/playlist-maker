@@ -8,7 +8,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.presentation.player.PlayerState
 import com.example.playlistmaker.presentation.player.PlayerViewModel
 import com.example.playlistmaker.presentation.player.PlayerViewModelFactory
@@ -68,7 +68,6 @@ class PlayerActivity : AppCompatActivity() {
             songYearValueTextView.text = track.releaseDate.take(4)
             songGenreValueTextView.text = track.primaryGenreName
             songCountryValueTextView.text = track.country
-
         }
     }
 

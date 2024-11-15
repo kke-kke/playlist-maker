@@ -5,8 +5,8 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.domain.api.player.MediaPlayerInteractor
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.player.api.MediaPlayerInteractor
+import com.example.playlistmaker.domain.search.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 

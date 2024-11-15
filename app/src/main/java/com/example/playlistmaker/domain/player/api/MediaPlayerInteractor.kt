@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.api.player
+package com.example.playlistmaker.domain.player.api
 
 interface MediaPlayerInteractor {
 

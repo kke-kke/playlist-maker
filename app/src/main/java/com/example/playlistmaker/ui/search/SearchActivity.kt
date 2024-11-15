@@ -15,8 +15,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.utils.Constants.SEARCH_HISTORY
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.models.Resource
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.models.Resource
+import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.presentation.search.SearchHistoryViewModel
 import com.example.playlistmaker.presentation.search.SearchViewModel
 import com.example.playlistmaker.presentation.search.SearchViewModelFactory

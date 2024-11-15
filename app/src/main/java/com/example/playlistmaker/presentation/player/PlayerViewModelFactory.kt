@@ -2,7 +2,7 @@ package com.example.playlistmaker.presentation.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.data.creator.Creator
+import com.example.playlistmaker.creator.Creator
 
 class PlayerViewModelFactory() : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

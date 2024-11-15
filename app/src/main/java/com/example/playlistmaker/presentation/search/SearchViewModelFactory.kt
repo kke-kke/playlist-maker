@@ -3,7 +3,7 @@ package com.example.playlistmaker.presentation.search
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.data.creator.Creator
+import com.example.playlistmaker.creator.Creator
 
 class SearchViewModelFactory(private val sharedPreferences: SharedPreferences) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

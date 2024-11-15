@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.domain.api.track.TrackInteractor
-import com.example.playlistmaker.domain.models.Resource
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.search.api.TrackInteractor
+import com.example.playlistmaker.domain.search.models.Resource
+import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
