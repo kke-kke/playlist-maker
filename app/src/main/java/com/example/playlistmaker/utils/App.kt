@@ -3,6 +3,7 @@ package com.example.playlistmaker.utils
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.utils.Constants.SETTINGS_PREFERENCES
 import com.example.playlistmaker.utils.Constants.THEME_KEY
 
@@ -10,6 +11,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Creator.initialize(this)
         applyThemeFromPreferences()
     }
 

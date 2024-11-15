@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.impl.settings
+package com.example.playlistmaker.domain.settings.impl
 
 import android.content.Context.MODE_PRIVATE
-import com.example.playlistmaker.domain.api.settings.SettingsInteractor
+import com.example.playlistmaker.domain.settings.api.SettingsInteractor
 import com.example.playlistmaker.utils.App
 import com.example.playlistmaker.utils.Constants.SETTINGS_PREFERENCES
 import com.example.playlistmaker.utils.Constants.THEME_KEY
