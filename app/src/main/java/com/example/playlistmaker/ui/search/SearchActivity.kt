@@ -11,6 +11,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.utils.Constants.SEARCH_HISTORY
 import com.example.playlistmaker.databinding.ActivitySearchBinding
@@ -134,7 +135,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchViewModel.isLoading.observe(this) { isLoading ->
-            searchBinding.searchProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            searchBinding.searchProgressBar.isVisible = isLoading
         }
 
         searchViewModel.emptyState.observe(this) { isEmpty ->
@@ -172,8 +173,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun hideKeyboard() {
-        val mgr = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        mgr.hideSoftInputFromWindow(searchBinding.searchBar.windowToken, 0)
+        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(searchBinding.searchBar.windowToken, 0)
         hideRecycler()
     }
 
