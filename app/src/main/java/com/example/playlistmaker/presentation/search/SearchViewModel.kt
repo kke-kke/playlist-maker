@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
-    val searchResults = MutableLiveData<List<Track>>()
+    private val _searchResults = MutableLiveData<List<Track>>()
+    val searchResults: LiveData<List<Track>> get() = _searchResults
+
     private val _trackList = MutableLiveData<Resource<List<Track>>>()
     val trackList: LiveData<Resource<List<Track>>> get() = _trackList
 
