@@ -15,9 +15,9 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.utils.Constants.SEARCH_HISTORY
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.search.models.Resource
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.presentation.search.SearchHistoryViewModel
+import com.example.playlistmaker.presentation.search.SearchScreenState
 import com.example.playlistmaker.presentation.search.SearchViewModel
 import com.example.playlistmaker.presentation.search.SearchViewModelFactory
 import com.example.playlistmaker.ui.player.PlayerActivity
@@ -113,10 +113,11 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        searchViewModel.trackList.observe(this) { tracks ->
-            when (tracks) {
-                is Resource.Success<*> -> {
-                    val data = tracks.data as? List<Track>
+        searchViewModel.searchState.observe(this) { state ->
+            when (state) {
+                is SearchScreenState.Loading -> searchBinding.searchProgressBar.isVisible = true
+                is SearchScreenState.Success -> {
+                    val data = state.tracks as? List<Track>
                     if (data.isNullOrEmpty()) {
                         showMessage(searchBinding.nothingFoundLayout)
                     } else {
@@ -127,35 +128,15 @@ class SearchActivity : AppCompatActivity() {
                         searchBinding.searchResultRecyclerView.show()
                     }
                 }
-                is Resource.Error<*> -> {
+                is SearchScreenState.Empty -> {
+                    hideAllMessages()
+                    showMessage(searchBinding.nothingFoundLayout)
+                }
+                is SearchScreenState.Error -> {
+                    hideAllMessages()
                     showMessage(searchBinding.connectionProblemsLayout)
                 }
             }
-            searchBinding.searchProgressBar.gone()
-        }
-
-        searchViewModel.isLoading.observe(this) { isLoading ->
-            searchBinding.searchProgressBar.isVisible = isLoading
-        }
-
-        searchViewModel.emptyState.observe(this) { isEmpty ->
-            if (isEmpty) {
-                hideAllMessages()
-                showMessage(searchBinding.nothingFoundLayout)
-            }
-        }
-
-        searchViewModel.errorState.observe(this) { errorMessage ->
-            if (errorMessage != null) {
-                hideAllMessages()
-                showMessage(searchBinding.connectionProblemsLayout)
-            }
-        }
-
-        searchViewModel.searchResults.observe(this) { tracks ->
-            trackAdapter.tracks = tracks as ArrayList<Track>
-            trackAdapter.notifyDataSetChanged()
-            hideLoading()
         }
 
         searchHistoryViewModel.trackHistoryList.observe(this) { history ->

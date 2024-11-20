@@ -14,22 +14,10 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
-    private val _searchResults = MutableLiveData<List<Track>>()
-    val searchResults: LiveData<List<Track>> get() = _searchResults
-
-    private val _trackList = MutableLiveData<Resource<List<Track>>>()
-    val trackList: LiveData<Resource<List<Track>>> get() = _trackList
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _searchState = MutableLiveData<SearchScreenState>()
+    val searchState: LiveData<SearchScreenState> get() = _searchState
 
     private val searchQuery = MutableStateFlow("")
-
-    private val _emptyState = MutableLiveData<Boolean>()
-    val emptyState: LiveData<Boolean> get() = _emptyState
-
-    private val _errorState = MutableLiveData<String?>()
-    val errorState: LiveData<String?> get() = _errorState
 
     init {
         viewModelScope.launch {
@@ -48,28 +36,21 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
     }
 
     fun performSearch(query: String) {
-        _isLoading.value = true
-        _emptyState.value = false
-        _errorState.value = null
+        _searchState.value = SearchScreenState.Loading
 
         interactor.searchTracks(query, object : TrackInteractor.TrackConsumer {
             override fun consume(foundTracks: Resource<List<Track>>) {
-                _isLoading.postValue(false)
-
                 when (foundTracks) {
                     is Resource.Success -> {
                         val tracks = foundTracks.data
                         if (tracks.isEmpty()) {
-                            _emptyState.postValue(true)
-                            _trackList.postValue(Resource.Success(emptyList()))
+                            _searchState.postValue(SearchScreenState.Empty)
                         } else {
-                            _emptyState.postValue(false)
-                            _trackList.postValue(Resource.Success(tracks))
+                            _searchState.postValue(SearchScreenState.Success(tracks))
                         }
                     }
                     is Resource.Error -> {
-                        _errorState.postValue(foundTracks.message)
-                        _trackList.postValue(Resource.Error(foundTracks.message))
+                        _searchState.postValue(SearchScreenState.Error(foundTracks.message ?: "Unknown error"))
                     }
                 }
             }
