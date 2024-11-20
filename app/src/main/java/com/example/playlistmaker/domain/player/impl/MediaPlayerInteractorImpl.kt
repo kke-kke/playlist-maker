@@ -1,57 +1,39 @@
 package com.example.playlistmaker.domain.player.impl
 
-import android.media.MediaPlayer
 import com.example.playlistmaker.domain.player.api.MediaPlayerInteractor
+import com.example.playlistmaker.domain.player.api.MediaPlayerRepository
 
-class MediaPlayerInteractorImpl: MediaPlayerInteractor {
-
-    private var mediaPlayer: MediaPlayer? = null
-    private var currentTrack: String? = null
-    private var lastPosition: Int = 0
+class MediaPlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerRepository): MediaPlayerInteractor {
 
     override fun preparePlayer(url: String, onPrepared: () -> Unit) {
-        if (mediaPlayer == null || currentTrack != url) {
-            releasePlayer()
-
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(url)
-                prepareAsync()
-                setOnPreparedListener {
-                    if (lastPosition > 0) seekTo(lastPosition)
-                    onPrepared()
-                }
-            }
-            currentTrack = url
-        } else {
-            mediaPlayer?.seekTo(lastPosition)
-            onPrepared()
-        }
+        mediaPlayerRepository.preparePlayer(url, onPrepared)
     }
 
     override fun startPlayer() {
-        mediaPlayer?.start()
+        mediaPlayerRepository.startPlayer()
     }
 
     override fun pausePlayer() {
-        lastPosition = mediaPlayer?.currentPosition ?: 0
-        mediaPlayer?.pause()
+        mediaPlayerRepository.pausePlayer()
     }
 
     override fun releasePlayer() {
-        lastPosition = mediaPlayer?.currentPosition ?: lastPosition
-        mediaPlayer?.release()
-        mediaPlayer = null
-        currentTrack = null
+        mediaPlayerRepository.releasePlayer()
     }
 
-    override fun getCurrentPosition(): Int = mediaPlayer?.currentPosition ?: lastPosition
+    override fun getCurrentPosition(): Int {
+        return mediaPlayerRepository.getCurrentPosition()
+    }
 
-    override fun isPlaying(): Boolean = mediaPlayer?.isPlaying ?: false
+    override fun isPlaying(): Boolean {
+        return mediaPlayerRepository.isPlaying()
+    }
 
     override fun goToPosition(position: Int) {
-        mediaPlayer?.seekTo(position)
-        lastPosition = position
+        mediaPlayerRepository.goToPosition(position)
     }
 
-    override fun getDuration(): Int = mediaPlayer?.duration ?: 0
+    override fun getDuration(): Int {
+        return mediaPlayerRepository.getDuration()
+    }
 }
