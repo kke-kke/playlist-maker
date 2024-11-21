@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.player
+package com.example.playlistmaker.ui.player.viewModel
 
 import android.os.Handler
 import android.os.Looper
@@ -11,11 +11,10 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) : ViewModel() {
-    private val _playerState = MutableLiveData<PlayerState>().apply { value = PlayerState.Default }
-    val playerState: LiveData<PlayerState> get() = _playerState
-
-    private val _currentPosition = MutableLiveData<String>().apply { value = "00:00" }
-    val currentPosition: LiveData<String> get() = _currentPosition
+    private val _playerState = MutableLiveData<PlayerScreenState>().apply {
+        value = PlayerScreenState()
+    }
+    val playerState: LiveData<PlayerScreenState> get() = _playerState
 
     private val playbackHandler = Handler(Looper.getMainLooper())
     private val playbackRunnable = object : Runnable {
@@ -34,8 +33,9 @@ class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) 
 
     fun loadTrack(track: Track) {
         mediaPlayerInteractor.preparePlayer(track.previewUrl ?: "") {
-            _playerState.value = PlayerState.Prepared
             trackLength = mediaPlayerInteractor.getDuration()
+            val formattedLength = formattedPosition(trackLength)
+            updateState(isPrepared = true, trackLength = formattedLength)
         }
     }
 
@@ -50,14 +50,14 @@ class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) 
     fun play() {
         mediaPlayerInteractor.goToPosition(lastPosition)
         mediaPlayerInteractor.startPlayer()
-        _playerState.value = PlayerState.Playing
+        updateState(isPlaying = true, currentPosition = formattedPosition(lastPosition))
         playbackHandler.post(playbackRunnable)
     }
 
     fun pause() {
         lastPosition = mediaPlayerInteractor.getCurrentPosition()
         mediaPlayerInteractor.pausePlayer()
-        _playerState.value = PlayerState.Paused
+        updateState(isPlaying = false, currentPosition = formattedPosition(lastPosition))
         playbackHandler.removeCallbacks(playbackRunnable)
     }
 
@@ -68,19 +68,31 @@ class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) 
 
     private fun updateCurrentPosition() {
         val currentPos = mediaPlayerInteractor.getCurrentPosition().coerceAtMost(trackLength)
-        val formattedPosition = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPos)
-        _currentPosition.value = formattedPosition
+        updateState(currentPosition = formattedPosition(currentPos))
     }
 
     private fun stopPlaybackAtLimit() {
         pause()
-        _currentPosition.value = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackLength)
-        _playerState.value = PlayerState.Prepared
+        updateState(currentPosition = formattedPosition(trackLength))
     }
 
     override fun onCleared() {
         super.onCleared()
         mediaPlayerInteractor.releasePlayer()
         playbackHandler.removeCallbacks(playbackRunnable)
+    }
+
+    private fun updateState(isPlaying: Boolean? = null, currentPosition: String? = null, trackLength: String? = null, isPrepared: Boolean? = null) {
+        val currentState = _playerState.value ?: PlayerScreenState()
+        _playerState.value = currentState.copy(
+            isPlaying = isPlaying ?: currentState.isPlaying,
+            currentPosition = currentPosition ?: currentState.currentPosition,
+            trackLength = trackLength ?: currentState.trackLength,
+            isPrepared = isPrepared ?: currentState.isPrepared
+        )
+    }
+
+    private fun formattedPosition(millis: Int): String {
+        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(millis)
     }
 }

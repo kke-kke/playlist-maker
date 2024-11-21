@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.player
+package com.example.playlistmaker.ui.player.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -9,14 +9,13 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.presentation.player.PlayerState
-import com.example.playlistmaker.presentation.player.PlayerViewModel
-import com.example.playlistmaker.presentation.player.PlayerViewModelFactory
+import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
+import com.example.playlistmaker.ui.player.viewModel.PlayerViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
-    private lateinit var viewModel: PlayerViewModel
+    private lateinit var playerViewModel: PlayerViewModel
     private lateinit var playerBinding: ActivityPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,17 +24,17 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(playerBinding.root)
 
         val track = intent.getSerializableExtra("TRACK") as Track
-        viewModel = ViewModelProvider(this, PlayerViewModelFactory())[PlayerViewModel::class.java]
+        playerViewModel = ViewModelProvider(this, PlayerViewModelFactory())[PlayerViewModel::class.java]
 
-        viewModel.loadTrack(track)
+        playerViewModel.loadTrack(track)
         bindTrack(playerBinding, track)
 
-        viewModel.currentPosition.observe(this) { position ->
-            playerBinding.currentLengthTextView.text = position
-        }
-
-        viewModel.playerState.observe(this) { state ->
-            changePlayButton(state)
+        playerViewModel.playerState.observe(this) { state ->
+            with(playerBinding) {
+                playButton.setImageResource(if (state.isPlaying) R.drawable.pause else R.drawable.play)
+                playButton.isEnabled = state.isPrepared
+                currentLengthTextView.text = state.currentPosition
+            }
         }
 
         initClickListeners()
@@ -43,12 +42,12 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.pause()
+        playerViewModel.pause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.release()
+        playerViewModel.release()
     }
 
     private fun bindTrack(binding: ActivityPlayerBinding, track: Track) {
@@ -73,28 +72,11 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun initClickListeners() {
         playerBinding.playButton.setOnClickListener {
-            viewModel.playbackControl()
+            playerViewModel.playbackControl()
         }
 
         playerBinding.playerToolbar.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
-        }
-    }
-
-    private fun changePlayButton(state: PlayerState) {
-        when (state) {
-            PlayerState.Playing -> {
-                playerBinding.playButton.setImageResource(R.drawable.pause)
-                playerBinding.playButton.isEnabled = true
-            }
-            PlayerState.Paused, PlayerState.Prepared -> {
-                playerBinding.playButton.setImageResource(R.drawable.play)
-                playerBinding.playButton.isEnabled = true
-            }
-            PlayerState.Default -> {
-                playerBinding.playButton.setImageResource(R.drawable.play)
-                playerBinding.playButton.isEnabled = false
-            }
         }
     }
 }
