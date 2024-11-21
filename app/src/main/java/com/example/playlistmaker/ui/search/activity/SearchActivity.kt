@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.search
+package com.example.playlistmaker.ui.search.activity
 
 import android.content.Context
 import android.content.Intent
@@ -16,11 +16,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.utils.Constants.SEARCH_HISTORY
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.presentation.search.SearchHistoryViewModel
-import com.example.playlistmaker.presentation.search.SearchScreenState
-import com.example.playlistmaker.presentation.search.SearchViewModel
-import com.example.playlistmaker.presentation.search.SearchViewModelFactory
-import com.example.playlistmaker.ui.player.PlayerActivity
+import com.example.playlistmaker.ui.search.viewModel.SearchHistoryViewModel
+import com.example.playlistmaker.ui.search.viewModel.SearchScreenState
+import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
+import com.example.playlistmaker.ui.search.viewModel.SearchViewModelFactory
+import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import java.io.Serializable
 
 class SearchActivity : AppCompatActivity() {

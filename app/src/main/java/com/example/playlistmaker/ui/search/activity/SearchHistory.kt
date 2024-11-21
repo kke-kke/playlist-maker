@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.search
+package com.example.playlistmaker.ui.search.activity
 
 import android.content.SharedPreferences
 import com.example.playlistmaker.utils.Constants.SEARCH_HISTORY

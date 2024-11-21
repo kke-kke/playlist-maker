@@ -19,7 +19,7 @@ import com.example.playlistmaker.domain.settings.api.SettingsRepository
 import com.example.playlistmaker.domain.settings.impl.SettingsInteractorImpl
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
-import com.example.playlistmaker.ui.search.SearchHistory
+import com.example.playlistmaker.ui.search.activity.SearchHistory
 import com.example.playlistmaker.utils.App
 import com.example.playlistmaker.utils.Constants.SETTINGS_PREFERENCES
 

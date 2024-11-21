@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.search
+package com.example.playlistmaker.ui.search.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -50,7 +50,11 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
                         }
                     }
                     is Resource.Error -> {
-                        _searchState.postValue(SearchScreenState.Error(foundTracks.message ?: "Unknown error"))
+                        _searchState.postValue(
+                            SearchScreenState.Error(
+                                foundTracks.message ?: "Unknown error"
+                            )
+                        )
                     }
                 }
             }

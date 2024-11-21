@@ -1,11 +1,11 @@
-package com.example.playlistmaker.ui.settings
+package com.example.playlistmaker.ui.settings.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
-import com.example.playlistmaker.presentation.settings.SettingsViewModel
-import com.example.playlistmaker.presentation.settings.SettingsViewModelFactory
+import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModel
+import com.example.playlistmaker.ui.settings.viewModel.SettingsViewModelFactory
 
 class SettingsActivity : AppCompatActivity() {
 

@@ -1,11 +1,11 @@
-package com.example.playlistmaker.presentation.search
+package com.example.playlistmaker.ui.search.viewModel
 
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.search.SearchHistory
+import com.example.playlistmaker.ui.search.activity.SearchHistory
 
 class SearchHistoryViewModel(private val sharedPreferences: SharedPreferences): ViewModel() {
     private val _trackHistoryList = MutableLiveData<List<Track>>()

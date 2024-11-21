@@ -6,7 +6,7 @@ import com.example.playlistmaker.data.search.dto.TrackSearchResponse
 import com.example.playlistmaker.domain.search.api.TrackRepository
 import com.example.playlistmaker.domain.search.models.Resource
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.search.SearchHistory
+import com.example.playlistmaker.ui.search.activity.SearchHistory
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient, private val searchHistory: SearchHistory) :
     TrackRepository {
