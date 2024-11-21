@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.search.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -13,7 +12,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.utils.Constants.SEARCH_HISTORY
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.search.viewModel.SearchHistoryViewModel
@@ -42,9 +40,8 @@ class SearchActivity : AppCompatActivity() {
         searchBinding.searchResultRecyclerView.adapter = trackAdapter
         searchBinding.searchHistoryRecyclerView.adapter = trackHistoryAdapter
 
-        val sharedPreferences = getSharedPreferences(SEARCH_HISTORY, Context.MODE_PRIVATE)
-        searchViewModel = ViewModelProvider(this, SearchViewModelFactory(sharedPreferences))[SearchViewModel::class.java]
-        searchHistoryViewModel = ViewModelProvider(this, SearchViewModelFactory(sharedPreferences))[SearchHistoryViewModel::class.java]
+        searchViewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
+        searchHistoryViewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchHistoryViewModel::class.java]
 
         initObservers()
 

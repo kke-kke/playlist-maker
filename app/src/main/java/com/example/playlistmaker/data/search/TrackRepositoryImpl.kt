@@ -6,10 +6,9 @@ import com.example.playlistmaker.data.search.dto.TrackSearchResponse
 import com.example.playlistmaker.domain.search.api.TrackRepository
 import com.example.playlistmaker.domain.search.models.Resource
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.search.activity.SearchHistory
+import com.example.playlistmaker.domain.settings.api.SearchHistoryRepository
 
-class TrackRepositoryImpl(private val networkClient: NetworkClient, private val searchHistory: SearchHistory) :
-    TrackRepository {
+class TrackRepositoryImpl(private val networkClient: NetworkClient, private val searchHistoryRepository: SearchHistoryRepository) : TrackRepository {
 
     override fun searchTracks(expression: String): Resource<List<Track>> {
         return try {
@@ -26,15 +25,15 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient, private val 
     }
 
     override fun addTrackToHistory(track: Track) {
-        searchHistory.addTrackToHistory(track)
+        searchHistoryRepository.addTrackToHistory(track)
     }
 
     override fun loadTrackHistory(): List<Track> {
-        return searchHistory.loadTrackHistory()
+        return searchHistoryRepository.loadTrackHistory()
     }
 
     override fun clearHistory() {
-        return searchHistory.clearHistory()
+        return searchHistoryRepository.clearHistory()
     }
 
     private fun TrackDto.toDomainModel(): Track {

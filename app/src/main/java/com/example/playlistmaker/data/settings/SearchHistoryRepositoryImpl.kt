@@ -1,20 +1,21 @@
-package com.example.playlistmaker.ui.search.activity
+package com.example.playlistmaker.data.settings
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.utils.Constants.SEARCH_HISTORY
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.domain.settings.api.SearchHistoryRepository
+import com.example.playlistmaker.utils.Constants.SEARCH_HISTORY
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class SearchHistory(private val sharedPreferences: SharedPreferences) {
+class SearchHistoryRepositoryImpl(private val sharedPreferences: SharedPreferences): SearchHistoryRepository {
 
-    fun saveTrackHistory(tracks: List<Track>) {
+    override fun saveTrackHistory(tracks: List<Track>) {
         sharedPreferences.edit()
             .putString(SEARCH_HISTORY, Gson().toJson(tracks))
             .apply()
     }
 
-    fun loadTrackHistory(): ArrayList<Track> {
+    override fun loadTrackHistory(): ArrayList<Track> {
         val tracksJson = sharedPreferences.getString(SEARCH_HISTORY, null)
         return if (tracksJson != null) {
             val type = object : TypeToken<ArrayList<Track>>() {}.type
@@ -24,7 +25,7 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         }
     }
 
-    fun addTrackToHistory(newTrack: Track) {
+    override fun addTrackToHistory(newTrack: Track) {
         val trackHistoryList = loadTrackHistory()
 
         val existingTrackIndex = trackHistoryList.indexOfFirst { it.trackId == newTrack.trackId }
@@ -44,7 +45,7 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         saveTrackHistory(trackHistoryList)
     }
 
-    fun clearHistory() {
+    override fun clearHistory() {
         sharedPreferences.edit()
             .remove(SEARCH_HISTORY)
             .apply()
