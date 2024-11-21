@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.player.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.utils.Constants.INITIAL_TRACK_TIME
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -72,8 +73,9 @@ class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) 
     }
 
     private fun stopPlaybackAtLimit() {
+        lastPosition = 0
         pause()
-        updateState(currentPosition = formattedPosition(trackLength))
+        updateState(isPlaying = false, currentPosition = INITIAL_TRACK_TIME)
     }
 
     override fun onCleared() {
