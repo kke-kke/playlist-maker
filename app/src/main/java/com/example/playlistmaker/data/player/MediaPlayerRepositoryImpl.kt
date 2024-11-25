@@ -3,13 +3,12 @@ package com.example.playlistmaker.data.player
 import android.media.MediaPlayer
 import com.example.playlistmaker.domain.player.api.MediaPlayerRepository
 
-class MediaPlayerRepositoryImpl: MediaPlayerRepository {
-    private var mediaPlayer: MediaPlayer? = null
+class MediaPlayerRepositoryImpl(private var mediaPlayer: MediaPlayer): MediaPlayerRepository {
     private var currentTrack: String? = null
     private var lastPosition = 0
 
     override fun preparePlayer(url: String, onPrepared: () -> Unit) {
-        if (mediaPlayer == null || currentTrack != url) {
+        if (currentTrack != url) {
             releasePlayer()
 
             mediaPlayer = MediaPlayer().apply {
@@ -22,35 +21,35 @@ class MediaPlayerRepositoryImpl: MediaPlayerRepository {
             }
             currentTrack = url
         } else {
-            mediaPlayer?.seekTo(lastPosition)
+            mediaPlayer.seekTo(lastPosition)
             onPrepared()
         }
     }
 
     override fun startPlayer() {
-        mediaPlayer?.start()
+        mediaPlayer.start()
     }
 
     override fun pausePlayer() {
-        lastPosition = mediaPlayer?.currentPosition ?: 0
-        mediaPlayer?.pause()
+        lastPosition = mediaPlayer.currentPosition
+        mediaPlayer.pause()
     }
 
     override fun releasePlayer() {
-        lastPosition = mediaPlayer?.currentPosition ?: lastPosition
-        mediaPlayer?.release()
-        mediaPlayer = null
+        lastPosition = mediaPlayer.currentPosition
+        mediaPlayer.stop()
+        mediaPlayer.reset()
         currentTrack = null
     }
 
-    override fun getCurrentPosition(): Int = mediaPlayer?.currentPosition ?: lastPosition
+    override fun getCurrentPosition(): Int = mediaPlayer.currentPosition
 
-    override fun isPlaying(): Boolean = mediaPlayer?.isPlaying ?: false
+    override fun isPlaying(): Boolean = mediaPlayer.isPlaying
 
     override fun goToPosition(position: Int) {
-        mediaPlayer?.seekTo(position)
+        mediaPlayer.seekTo(position)
         lastPosition = position
     }
 
-    override fun getDuration(): Int = mediaPlayer?.duration ?: 0
+    override fun getDuration(): Int = mediaPlayer.duration
 }

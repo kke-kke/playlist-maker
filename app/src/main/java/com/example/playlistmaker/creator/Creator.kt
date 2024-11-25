@@ -1,6 +1,7 @@
 package com.example.playlistmaker.creator
 
 import android.content.Context
+import android.media.MediaPlayer
 import com.example.playlistmaker.data.player.MediaPlayerRepositoryImpl
 import com.example.playlistmaker.data.search.TrackRepositoryImpl
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
@@ -53,8 +54,14 @@ object Creator {
     }
 
     // mediaPlayer
+    class MediaPlayerCreator {
+        fun createMediaPlayer(): MediaPlayer {
+            return MediaPlayer()
+        }
+    }
+
     private fun getMediaPlayerRepository():MediaPlayerRepository {
-        return MediaPlayerRepositoryImpl()
+        return MediaPlayerRepositoryImpl(MediaPlayerCreator().createMediaPlayer())
     }
 
     fun provideMediaPlayerInteractor(): MediaPlayerInteractor {
