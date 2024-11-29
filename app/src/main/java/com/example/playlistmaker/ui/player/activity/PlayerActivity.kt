@@ -2,7 +2,6 @@ package com.example.playlistmaker.ui.player.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -10,12 +9,12 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
-import com.example.playlistmaker.ui.player.viewModel.PlayerViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
-    private lateinit var playerViewModel: PlayerViewModel
+    private val playerViewModel: PlayerViewModel by viewModel()
     private lateinit var playerBinding: ActivityPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +23,6 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(playerBinding.root)
 
         val track = intent.getSerializableExtra("TRACK") as Track
-        playerViewModel = ViewModelProvider(this, PlayerViewModelFactory())[PlayerViewModel::class.java]
 
         playerViewModel.loadTrack(track)
         bindTrack(playerBinding, track)
