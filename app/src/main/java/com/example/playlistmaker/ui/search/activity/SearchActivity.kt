@@ -11,14 +11,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.search.viewModel.SearchHistoryViewModel
 import com.example.playlistmaker.ui.search.viewModel.SearchScreenState
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
-import com.example.playlistmaker.ui.search.viewModel.SearchViewModelFactory
 import com.example.playlistmaker.ui.player.activity.PlayerActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.Serializable
 
 class SearchActivity : AppCompatActivity() {
@@ -27,8 +26,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchBinding: ActivitySearchBinding
     private var trackAdapter = TrackAdapter()
     private var trackHistoryAdapter = TrackSearchHistoryAdapter()
-    private lateinit var searchViewModel: SearchViewModel
-    private lateinit var searchHistoryViewModel: SearchHistoryViewModel
+    private val searchViewModel: SearchViewModel by viewModel()
+    private val searchHistoryViewModel: SearchHistoryViewModel by viewModel()
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -39,9 +38,6 @@ class SearchActivity : AppCompatActivity() {
 
         searchBinding.searchResultRecyclerView.adapter = trackAdapter
         searchBinding.searchHistoryRecyclerView.adapter = trackHistoryAdapter
-
-        searchViewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchViewModel::class.java]
-        searchHistoryViewModel = ViewModelProvider(this, SearchViewModelFactory())[SearchHistoryViewModel::class.java]
 
         initObservers()
 

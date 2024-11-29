@@ -3,15 +3,23 @@ package com.example.playlistmaker.utils
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.di.dataModule
+import com.example.playlistmaker.di.interactorModule
+import com.example.playlistmaker.di.repositoryModule
+import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.utils.Constants.SETTINGS_PREFERENCES
 import com.example.playlistmaker.utils.Constants.THEME_KEY
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Creator.initialize(this)
+        startKoin {
+            androidContext(this@App)
+            modules(repositoryModule, dataModule, viewModelModule, interactorModule)
+        }
         applyThemeFromPreferences()
     }
 
@@ -34,14 +42,4 @@ class App : Application() {
         )
     }
 
-    fun switchTheme(darkTheme: Boolean) {
-        getSharedPreferences(SETTINGS_PREFERENCES, MODE_PRIVATE).edit()
-            .putBoolean(THEME_KEY, darkTheme)
-            .apply()
-
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkTheme) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
-    }
 }
