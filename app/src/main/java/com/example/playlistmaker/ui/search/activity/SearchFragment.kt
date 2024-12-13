@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity.INPUT_METHOD_SERVICE
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.SearchFragmentBinding
@@ -22,8 +21,6 @@ import com.example.playlistmaker.ui.player.activity.PlayerFragment
 import com.example.playlistmaker.ui.search.viewModel.SearchHistoryViewModel
 import com.example.playlistmaker.ui.search.viewModel.SearchScreenState
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -53,11 +50,12 @@ class SearchFragment : Fragment() {
         searchBinding.searchBar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (!searchBinding.searchBar.hasFocus()) return
                 searchValue = s.toString()
-                searchViewModel.updateSearchText(searchValue)
                 if (s.isNullOrEmpty()) {
                     hideKeyboard()
                     hideRecycler()
+                    searchViewModel.resetSearchState()
                 } else {
                     searchDebounce(searchValue)
                     searchViewModel.onSearchTextChanged(searchValue)
@@ -69,16 +67,30 @@ class SearchFragment : Fragment() {
                     hideHistoryLayout()
                 }
             }
-            override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()) {
-                    hideKeyboard()
-                    hideRecycler()
-                }
-            }
+            override fun afterTextChanged(s: Editable?) {}
         })
 
         initOnClickListeners()
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        searchViewModel.cancelSearch()
+        searchValue = DEFAULT_VALUE
+        searchBinding.searchBar.setText(DEFAULT_VALUE)
+        hideRecycler()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SEARCH_TEXT, searchValue)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        searchValue = savedInstanceState?.getString(SEARCH_TEXT, DEFAULT_VALUE) ?: DEFAULT_VALUE
+        searchBinding.searchBar.setText(searchValue)
     }
 
     private fun initObservers() {
@@ -99,18 +111,23 @@ class SearchFragment : Fragment() {
                 }
                 is SearchScreenState.Empty -> {
                     hideAllMessages()
+                    hideRecycler()
+                    if (trackHistoryAdapter.tracks.isNotEmpty()) {
+                        showHistoryLayout()
+                    } else {
+                        hideHistoryLayout()
+                    }
+                }
+                is SearchScreenState.EmptyResults -> {
+                    hideAllMessages()
+                    hideRecycler()
                     showMessage(searchBinding.nothingFoundLayout)
                 }
                 is SearchScreenState.Error -> {
                     hideAllMessages()
+                    hideLoading()
                     showMessage(searchBinding.connectionProblemsLayout)
                 }
-            }
-        }
-
-        searchViewModel.searchText.observe(viewLifecycleOwner) { text ->
-            if (searchBinding.searchBar.text.toString() != text) {
-                searchBinding.searchBar.setText(text)
             }
         }
 
@@ -166,11 +183,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun searchDebounce(stringToSearch: String) {
+        val searchRunnable = Runnable { searchViewModel.performSearch(stringToSearch) }
+
         handler.removeCallbacksAndMessages(null)
-        lifecycleScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY)
-            searchViewModel.performSearch(stringToSearch)
-        }
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun showMessage(layout: LinearLayout) {
@@ -225,6 +241,7 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
+        private const val SEARCH_TEXT: String = "SEARCH"
         private const val DEFAULT_VALUE = ""
         private const val SEARCH_DEBOUNCE_DELAY  = 2000L
     }

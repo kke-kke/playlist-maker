@@ -14,17 +14,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-class SearchViewModel(private val interactor: TrackInteractor, private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
     private val _searchState = MutableLiveData<SearchScreenState>()
     val searchState: LiveData<SearchScreenState> get() = _searchState
-
-    private val _searchText: MutableLiveData<String> = savedStateHandle.getLiveData(SEARCH_TEXT, "")
-    val searchText: LiveData<String> get() = _searchText
-
-    fun updateSearchText(newText: String) {
-        _searchText.value = newText
-        savedStateHandle[SEARCH_TEXT] = newText
-    }
 
     private val searchQuery = MutableStateFlow("")
 
@@ -71,7 +63,11 @@ class SearchViewModel(private val interactor: TrackInteractor, private val saved
 
     }
 
-    companion object {
-        private const val SEARCH_TEXT = "search_text"
+    fun cancelSearch() {
+        _searchState.value = SearchScreenState.Empty
+    }
+
+    fun resetSearchState() {
+        _searchState.value = SearchScreenState.Empty
     }
 }
