@@ -1,29 +1,35 @@
 package com.example.playlistmaker.ui.search.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity.INPUT_METHOD_SERVICE
 import androidx.core.view.isVisible
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.SearchFragmentBinding
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.ui.player.activity.PlayerFragment
 import com.example.playlistmaker.ui.search.viewModel.SearchHistoryViewModel
 import com.example.playlistmaker.ui.search.viewModel.SearchScreenState
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
-import com.example.playlistmaker.ui.player.activity.PlayerActivity
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.Serializable
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
     private var searchValue: String = DEFAULT_VALUE
 
-    private lateinit var searchBinding: ActivitySearchBinding
+    private lateinit var searchBinding: SearchFragmentBinding
     private var trackAdapter = TrackAdapter()
     private var trackHistoryAdapter = TrackSearchHistoryAdapter()
     private val searchViewModel: SearchViewModel by viewModel()
@@ -31,11 +37,13 @@ class SearchActivity : AppCompatActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        searchBinding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(searchBinding.root)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        searchBinding = SearchFragmentBinding.inflate(inflater, container, false)
+        return searchBinding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         searchBinding.searchResultRecyclerView.adapter = trackAdapter
         searchBinding.searchHistoryRecyclerView.adapter = trackHistoryAdapter
 
@@ -46,9 +54,10 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchValue = s.toString()
+                searchViewModel.updateSearchText(searchValue)
                 if (s.isNullOrEmpty()) {
-                    hideRecycler()
                     hideKeyboard()
+                    hideRecycler()
                 } else {
                     searchDebounce(searchValue)
                     searchViewModel.onSearchTextChanged(searchValue)
@@ -63,50 +72,17 @@ class SearchActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) {
                     hideKeyboard()
+                    hideRecycler()
                 }
             }
         })
 
-        // кнопка "назад"
-        searchBinding.searchToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
+        initOnClickListeners()
 
-        // повторение последнего запроса при проблемах с сетью
-        searchBinding.refreshButton.setOnClickListener { doRefresh() }
-
-        // клик на трек из результатов поиска
-        trackAdapter.onItemClick = { track ->
-            searchHistoryViewModel.addTrackToHistory(track)
-            startPlayerActivity(track)
-        }
-
-        // клик на трек в истории поиска
-        trackHistoryAdapter.onItemClick = { track ->
-            searchHistoryViewModel.addTrackToHistory(track)
-            startPlayerActivity(track)
-        }
-
-        // кнопка "очистить историю"
-        searchBinding.clearHistoryButton.setOnClickListener {
-            searchHistoryViewModel.clearHistory()
-            hideHistoryLayout()
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_TEXT, searchValue)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchValue = savedInstanceState.getString(SEARCH_TEXT, DEFAULT_VALUE)
-        searchBinding.searchBar.setText(searchValue)
     }
 
     private fun initObservers() {
-        searchViewModel.searchState.observe(this) { state ->
+        searchViewModel.searchState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is SearchScreenState.Loading -> searchBinding.searchProgressBar.isVisible = true
                 is SearchScreenState.Success -> {
@@ -132,7 +108,13 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        searchHistoryViewModel.trackHistoryList.observe(this) { history ->
+        searchViewModel.searchText.observe(viewLifecycleOwner) { text ->
+            if (searchBinding.searchBar.text.toString() != text) {
+                searchBinding.searchBar.setText(text)
+            }
+        }
+
+        searchHistoryViewModel.trackHistoryList.observe(viewLifecycleOwner) { history ->
             trackHistoryAdapter.tracks = ArrayList(history)
             trackHistoryAdapter.notifyDataSetChanged()
             hideLoading()
@@ -146,10 +128,35 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
+    private fun initOnClickListeners() {
+        // повторение последнего запроса при проблемах с сетью
+        searchBinding.refreshButton.setOnClickListener { doRefresh() }
+
+        // клик на трек из результатов поиска
+        trackAdapter.onItemClick = { track ->
+            searchHistoryViewModel.addTrackToHistory(track)
+            startPlayerActivity(track)
+        }
+
+        // клик на трек в истории поиска
+        trackHistoryAdapter.onItemClick = { track ->
+            searchHistoryViewModel.addTrackToHistory(track)
+            startPlayerActivity(track)
+        }
+
+        // кнопка "очистить историю"
+        searchBinding.clearHistoryButton.setOnClickListener {
+            searchHistoryViewModel.clearHistory()
+            hideHistoryLayout()
+        }
+    }
+
     private fun hideKeyboard() {
-        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(searchBinding.searchBar.windowToken, 0)
-        hideRecycler()
+        val context = context ?: return
+        val inputMethodManager = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val windowToken = searchBinding.searchBar.windowToken ?: return
+        inputMethodManager.hideSoftInputFromWindow(windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        searchBinding.searchBar.clearFocus()
     }
 
     private fun hideRecycler() {
@@ -159,10 +166,11 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchDebounce(stringToSearch: String) {
-        val searchRunnable = Runnable { searchViewModel.performSearch(stringToSearch) }
-
         handler.removeCallbacksAndMessages(null)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        lifecycleScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchViewModel.performSearch(stringToSearch)
+        }
     }
 
     private fun showMessage(layout: LinearLayout) {
@@ -172,8 +180,10 @@ class SearchActivity : AppCompatActivity() {
             searchBinding.nothingFoundLayout -> searchBinding.nothingFoundLayout.show()
             searchBinding.connectionProblemsLayout -> searchBinding.connectionProblemsLayout.show()
         }
-        trackAdapter.tracks.clear()
-        trackAdapter.notifyDataSetChanged()
+        if (trackAdapter.tracks.isNotEmpty()) {
+            trackAdapter.tracks.clear()
+            trackAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun hideAllMessages() {
@@ -203,9 +213,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun startPlayerActivity(track: Track) {
-        val playerIntent = Intent(this, PlayerActivity::class.java)
-        playerIntent.putExtra("TRACK", track as Serializable)
-        startActivity(playerIntent)
+        findNavController().navigate(R.id.action_searchFragment_to_playerFragment, PlayerFragment.createArgs(track))
     }
 
     private fun View.show() {
@@ -217,9 +225,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val SEARCH_TEXT: String = "SEARCH"
         private const val DEFAULT_VALUE = ""
         private const val SEARCH_DEBOUNCE_DELAY  = 2000L
     }
-
 }
