@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.search.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.search.api.TrackInteractor
@@ -13,9 +14,17 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
+class SearchViewModel(private val interactor: TrackInteractor, private val savedStateHandle: SavedStateHandle) : ViewModel() {
     private val _searchState = MutableLiveData<SearchScreenState>()
     val searchState: LiveData<SearchScreenState> get() = _searchState
+
+    private val _searchText: MutableLiveData<String> = savedStateHandle.getLiveData(SEARCH_TEXT, "")
+    val searchText: LiveData<String> get() = _searchText
+
+    fun updateSearchText(newText: String) {
+        _searchText.value = newText
+        savedStateHandle[SEARCH_TEXT] = newText
+    }
 
     private val searchQuery = MutableStateFlow("")
 
@@ -60,5 +69,9 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
             }
         })
 
+    }
+
+    companion object {
+        private const val SEARCH_TEXT = "search_text"
     }
 }

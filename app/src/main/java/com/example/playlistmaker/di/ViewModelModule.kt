@@ -1,5 +1,6 @@
 package com.example.playlistmaker.di
 
+import androidx.lifecycle.SavedStateHandle
 import com.example.playlistmaker.ui.library.viewModel.FavouritesViewModel
 import com.example.playlistmaker.ui.library.viewModel.PlaylistsViewModel
 import com.example.playlistmaker.ui.player.viewModel.PlayerViewModel
@@ -18,8 +19,8 @@ val viewModelModule = module {
         SearchHistoryViewModel(get())
     }
 
-    viewModel {
-        SearchViewModel(get())
+    viewModel { (handle: SavedStateHandle) ->
+        SearchViewModel(get(), handle)
     }
 
     viewModel {
