@@ -1,12 +1,12 @@
 package com.example.playlistmaker.ui.main.activity
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
-import com.example.playlistmaker.ui.library.activity.LibraryActivity
-import com.example.playlistmaker.ui.search.activity.SearchActivity
-import com.example.playlistmaker.ui.settings.activity.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainBinding: ActivityMainBinding
@@ -16,18 +16,26 @@ class MainActivity : AppCompatActivity() {
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
 
-        val searchIntent = Intent(this, SearchActivity::class.java)
-        val libraryIntent = Intent(this, LibraryActivity::class.java)
-        val settingsIntent = Intent(this, SettingsActivity::class.java)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
+        val navController = navHostFragment.navController
 
-        mainBinding.searchButton.setOnClickListener{
-            startActivity(searchIntent)
+        mainBinding.bottomNavigationView.setupWithNavController(navController)
+
+        mainBinding.bottomNavigationView.setOnItemSelectedListener { item ->
+            val navOptions = NavOptions.Builder()
+                .setEnterAnim(R.anim.fade_in)
+                .setExitAnim(R.anim.hold)
+                .setPopEnterAnim(R.anim.hold)
+                .setPopExitAnim(R.anim.fade_out)
+                .build()
+
+            when (item.itemId) {
+                R.id.searchFragment -> navController.navigate(R.id.searchFragment, null, navOptions)
+                R.id.libraryFragment -> navController.navigate(R.id.libraryFragment, null, navOptions)
+                R.id.settingsFragment -> navController.navigate(R.id.settingsFragment, null, navOptions)
+            }
+            true
         }
-        mainBinding.libraryButton.setOnClickListener {
-            startActivity(libraryIntent)
-        }
-        mainBinding.settingsButton.setOnClickListener {
-            startActivity(settingsIntent)
-        }
+
     }
 }

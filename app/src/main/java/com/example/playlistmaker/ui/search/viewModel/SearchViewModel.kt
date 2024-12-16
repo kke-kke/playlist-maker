@@ -2,6 +2,7 @@ package com.example.playlistmaker.ui.search.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.search.api.TrackInteractor
@@ -60,5 +61,13 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
             }
         })
 
+    }
+
+    fun cancelSearch() {
+        _searchState.value = SearchScreenState.Empty
+    }
+
+    fun resetSearchState() {
+        _searchState.value = SearchScreenState.Empty
     }
 }
