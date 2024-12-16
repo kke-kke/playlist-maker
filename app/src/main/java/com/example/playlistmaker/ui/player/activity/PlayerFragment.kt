@@ -61,6 +61,8 @@ class PlayerFragment : Fragment() {
             Glide.with(binding.albumCoverImage)
                 .load(track.getCoverArtwork())
                 .placeholder(R.drawable.ic_mock_cover)
+                .error(R.drawable.ic_mock_cover)
+                .fallback(R.drawable.ic_mock_cover)
                 .fitCenter()
                 .apply(RequestOptions.bitmapTransform(RoundedCorners(4)))
                 .into(albumCoverImage)
