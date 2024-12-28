@@ -1,13 +1,15 @@
 package com.example.playlistmaker.ui.player.viewModel
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.player.api.MediaPlayerInteractor
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.utils.Constants.INITIAL_TRACK_TIME
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -17,20 +19,9 @@ class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) 
     }
     val playerState: LiveData<PlayerScreenState> get() = _playerState
 
-    private val playbackHandler = Handler(Looper.getMainLooper())
-    private val playbackRunnable = object : Runnable {
-        override fun run() {
-            updateCurrentPosition()
-            if (mediaPlayerInteractor.isPlaying() && (mediaPlayerInteractor.getCurrentPosition() < trackLength)) {
-                playbackHandler.postDelayed(this, 400L)
-            } else {
-                stopPlaybackAtLimit()
-            }
-        }
-    }
-
     private var lastPosition: Int = 0
     private var trackLength = 0
+    private var progressJob: Job? = null
 
     fun loadTrack(track: Track) {
         mediaPlayerInteractor.preparePlayer(track.previewUrl ?: "") {
@@ -52,36 +43,47 @@ class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor) 
         mediaPlayerInteractor.goToPosition(lastPosition)
         mediaPlayerInteractor.startPlayer()
         updateState(isPlaying = true, currentPosition = formattedPosition(lastPosition))
-        playbackHandler.post(playbackRunnable)
+        startProgressUpdates()
     }
 
     fun pause() {
         lastPosition = mediaPlayerInteractor.getCurrentPosition()
         mediaPlayerInteractor.pausePlayer()
         updateState(isPlaying = false, currentPosition = formattedPosition(lastPosition))
-        playbackHandler.removeCallbacks(playbackRunnable)
+        stopProgressUpdates()
     }
 
     fun release() {
         mediaPlayerInteractor.releasePlayer()
-        playbackHandler.removeCallbacks(playbackRunnable)
+        stopProgressUpdates()
     }
 
-    private fun updateCurrentPosition() {
-        val currentPos = mediaPlayerInteractor.getCurrentPosition().coerceAtMost(trackLength)
-        updateState(currentPosition = formattedPosition(currentPos))
+    private fun startProgressUpdates() {
+        progressJob = viewModelScope.launch {
+            while (mediaPlayerInteractor.isPlaying() && mediaPlayerInteractor.getCurrentPosition() < trackLength) {
+                val currentPosition = mediaPlayerInteractor.getCurrentPosition().coerceAtMost(trackLength)
+                updateState(currentPosition = formattedPosition(currentPosition))
+                delay(400L)
+            }
+            stopPlaybackAtLimit()
+        }
+    }
+
+    private fun stopProgressUpdates() {
+        progressJob?.cancel()
     }
 
     private fun stopPlaybackAtLimit() {
         lastPosition = 0
-        pause()
+        mediaPlayerInteractor.pausePlayer()
+        stopProgressUpdates()
         updateState(isPlaying = false, currentPosition = INITIAL_TRACK_TIME)
     }
 
     override fun onCleared() {
         super.onCleared()
         mediaPlayerInteractor.releasePlayer()
-        playbackHandler.removeCallbacks(playbackRunnable)
+        stopProgressUpdates()
     }
 
     private fun updateState(isPlaying: Boolean? = null, currentPosition: String? = null, trackLength: String? = null, isPrepared: Boolean? = null) {
