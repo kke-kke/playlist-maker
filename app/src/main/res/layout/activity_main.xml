@@ -26,6 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:itemIconTint="@drawable/menu_tint_color"
+        app:itemBackground="?attr/colorPrimary"
         app:itemActiveIndicatorStyle="@android:color/transparent"
         app:itemTextColor="@drawable/menu_tint_color"
         app:itemTextAppearanceInactive="@style/SmallTextPrimary"
