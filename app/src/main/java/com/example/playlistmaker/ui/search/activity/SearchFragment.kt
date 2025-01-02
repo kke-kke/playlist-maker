@@ -76,9 +76,6 @@ class SearchFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        searchViewModel.cancelSearch()
-        searchValue = DEFAULT_VALUE
-        searchBinding.searchBar.setText(DEFAULT_VALUE)
         hideRecycler()
     }
 
@@ -89,8 +86,20 @@ class SearchFragment : Fragment() {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        searchValue = savedInstanceState?.getString(SEARCH_TEXT, DEFAULT_VALUE) ?: DEFAULT_VALUE
-        searchBinding.searchBar.setText(searchValue)
+
+        val (savedQuery, savedResults) = searchViewModel.restoreSearchState()
+
+        if (!savedQuery.isNullOrEmpty() && savedResults != null) {
+            searchValue = savedQuery
+            searchBinding.searchBar.setText(searchValue)
+
+            if (savedResults.isNotEmpty()) {
+                trackAdapter.tracks.clear()
+                trackAdapter.tracks.addAll(savedResults)
+                trackAdapter.notifyDataSetChanged()
+                searchBinding.searchResultRecyclerView.show()
+            }
+        }
     }
 
     private fun initObservers() {
@@ -152,6 +161,7 @@ class SearchFragment : Fragment() {
         // клик на трек из результатов поиска
         trackAdapter.onItemClick = { track ->
             searchHistoryViewModel.addTrackToHistory(track)
+            searchViewModel.saveSearchState(searchValue, trackAdapter.tracks)
             startPlayerActivity(track)
         }
 
@@ -159,6 +169,7 @@ class SearchFragment : Fragment() {
         trackHistoryAdapter.onItemClick = { track ->
             searchHistoryViewModel.addTrackToHistory(track)
             startPlayerActivity(track)
+            searchViewModel.resetSearchState()
         }
 
         // кнопка "очистить историю"

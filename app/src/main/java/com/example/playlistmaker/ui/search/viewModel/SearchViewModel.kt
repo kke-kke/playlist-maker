@@ -18,6 +18,11 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
 
     private val searchQuery = MutableStateFlow("")
 
+    private val searchResults = MutableLiveData<List<Track>>()
+
+    private var lastQuery: String? = null
+    private var lastSearchResults: List<Track>? = null
+
     init {
         viewModelScope.launch {
             searchQuery
@@ -34,6 +39,15 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
         searchQuery.value = query
     }
 
+    fun restoreSearchState(): Pair<String?, List<Track>?> {
+        return Pair(lastQuery, lastSearchResults)
+    }
+
+    fun saveSearchState(query: String, results: List<Track>) {
+        lastQuery = query
+        lastSearchResults = results
+    }
+
     fun performSearch(query: String) {
         _searchState.value = SearchScreenState.Loading
 
@@ -42,33 +56,28 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
                 .searchTracks(query)
                 .collect { pair ->
                     processResult(pair.first, pair.second)
+                    saveSearchState(query, pair.first ?: emptyList())
                 }
         }
-
-    }
-
-    fun cancelSearch() {
-        _searchState.value = SearchScreenState.Empty
     }
 
     fun resetSearchState() {
         _searchState.value = SearchScreenState.Empty
+        lastQuery = null
+        lastSearchResults = null
     }
 
     private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
-        val tracks = mutableListOf<Track>()
-        if (foundTracks != null) {
-            tracks.addAll(foundTracks)
-        }
         when {
             errorMessage != null -> {
                 renderState(SearchScreenState.Error(message = errorMessage))
             }
-            tracks.isEmpty() -> {
+            foundTracks.isNullOrEmpty() -> {
                 renderState(SearchScreenState.Empty)
             }
             else -> {
-                renderState(SearchScreenState.Success(tracks))
+                searchResults.value = foundTracks ?: emptyList()
+                renderState(SearchScreenState.Success(foundTracks))
             }
         }
     }
