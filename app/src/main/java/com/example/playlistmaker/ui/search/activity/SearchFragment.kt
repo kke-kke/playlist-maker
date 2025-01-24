@@ -1,8 +1,6 @@
 package com.example.playlistmaker.ui.search.activity
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -13,6 +11,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity.INPUT_METHOD_SERVICE
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.SearchFragmentBinding
@@ -21,6 +20,7 @@ import com.example.playlistmaker.ui.player.activity.PlayerFragment
 import com.example.playlistmaker.ui.search.viewModel.SearchHistoryViewModel
 import com.example.playlistmaker.ui.search.viewModel.SearchScreenState
 import com.example.playlistmaker.ui.search.viewModel.SearchViewModel
+import com.example.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -32,7 +32,7 @@ class SearchFragment : Fragment() {
     private val searchViewModel: SearchViewModel by viewModel()
     private val searchHistoryViewModel: SearchHistoryViewModel by viewModel()
 
-    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var searchDebounce: (Track) -> Unit
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         searchBinding = SearchFragmentBinding.inflate(inflater, container, false)
@@ -57,7 +57,7 @@ class SearchFragment : Fragment() {
                     hideRecycler()
                     searchViewModel.resetSearchState()
                 } else {
-                    searchDebounce(searchValue)
+                    searchDebounce = debounce<Track>(SEARCH_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { searchValue }
                     searchViewModel.onSearchTextChanged(searchValue)
                 }
 
@@ -76,9 +76,6 @@ class SearchFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        searchViewModel.cancelSearch()
-        searchValue = DEFAULT_VALUE
-        searchBinding.searchBar.setText(DEFAULT_VALUE)
         hideRecycler()
     }
 
@@ -89,8 +86,20 @@ class SearchFragment : Fragment() {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        searchValue = savedInstanceState?.getString(SEARCH_TEXT, DEFAULT_VALUE) ?: DEFAULT_VALUE
-        searchBinding.searchBar.setText(searchValue)
+
+        val (savedQuery, savedResults) = searchViewModel.restoreSearchState()
+
+        if (!savedQuery.isNullOrEmpty() && savedResults != null) {
+            searchValue = savedQuery
+            searchBinding.searchBar.setText(searchValue)
+
+            if (savedResults.isNotEmpty()) {
+                trackAdapter.tracks.clear()
+                trackAdapter.tracks.addAll(savedResults)
+                trackAdapter.notifyDataSetChanged()
+                searchBinding.searchResultRecyclerView.show()
+            }
+        }
     }
 
     private fun initObservers() {
@@ -152,6 +161,7 @@ class SearchFragment : Fragment() {
         // клик на трек из результатов поиска
         trackAdapter.onItemClick = { track ->
             searchHistoryViewModel.addTrackToHistory(track)
+            searchViewModel.saveSearchState(searchValue, trackAdapter.tracks)
             startPlayerActivity(track)
         }
 
@@ -159,6 +169,7 @@ class SearchFragment : Fragment() {
         trackHistoryAdapter.onItemClick = { track ->
             searchHistoryViewModel.addTrackToHistory(track)
             startPlayerActivity(track)
+            searchViewModel.resetSearchState()
         }
 
         // кнопка "очистить историю"
@@ -180,13 +191,6 @@ class SearchFragment : Fragment() {
         searchBinding.searchResultRecyclerView.gone()
         trackAdapter.tracks.clear()
         trackAdapter.notifyDataSetChanged()
-    }
-
-    private fun searchDebounce(stringToSearch: String) {
-        val searchRunnable = Runnable { searchViewModel.performSearch(stringToSearch) }
-
-        handler.removeCallbacksAndMessages(null)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun showMessage(layout: LinearLayout) {

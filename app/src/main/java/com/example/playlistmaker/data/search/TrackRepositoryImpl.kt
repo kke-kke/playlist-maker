@@ -7,20 +7,22 @@ import com.example.playlistmaker.domain.search.api.TrackRepository
 import com.example.playlistmaker.domain.search.models.Resource
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.settings.api.SearchHistoryRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient, private val searchHistoryRepository: SearchHistoryRepository) : TrackRepository {
 
-    override fun searchTracks(expression: String): Resource<List<Track>> {
-        return try {
-            val response = networkClient.doRequest(TrackSearchRequest(expression))
+    override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
+        val response = networkClient.doRequest(TrackSearchRequest(expression))
+        try {
             if (response.resultCode == 200) {
                 val results = (response as TrackSearchResponse).results.map { it.toDomainModel() }
-                Resource.Success(results)
+                emit(Resource.Success(results))
             } else {
-                Resource.Error("Server error: ${response.resultCode}")
+                emit(Resource.Error("Server error: ${response.resultCode}"))
             }
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "Unknown error")
+            emit(Resource.Error(e.message ?: "Unknown error"))
         }
     }
 

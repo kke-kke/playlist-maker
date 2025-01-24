@@ -1,11 +1,11 @@
 package com.example.playlistmaker.domain.search.api
 
-import com.example.playlistmaker.domain.search.models.Resource
 import com.example.playlistmaker.domain.search.models.Track
+import kotlinx.coroutines.flow.Flow
 
 interface TrackInteractor {
 
-    fun searchTracks(expression: String, consumer: TrackConsumer)
+    fun searchTracks(expression: String) : Flow<Pair<List<Track>?, String?>>
 
     fun addToHistory(track: Track)
 
@@ -13,7 +13,4 @@ interface TrackInteractor {
 
     fun clearHistory()
 
-    interface TrackConsumer {
-        fun consume(foundTracks: Resource<List<Track>>)
-    }
 }
