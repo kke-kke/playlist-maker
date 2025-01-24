@@ -18,7 +18,7 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
     single<MediaPlayerRepository> {
-        MediaPlayerRepositoryImpl(get(), get(), get())
+        MediaPlayerRepositoryImpl(get())
     }
     single<TrackRepository> {
         TrackRepositoryImpl(get(), get())
