@@ -4,9 +4,7 @@ import com.example.playlistmaker.data.db.AppDatabase
 import com.example.playlistmaker.data.db.converters.TrackDbConvertor
 import com.example.playlistmaker.domain.db.FavouritesRepository
 import com.example.playlistmaker.domain.search.models.Track
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class FavouritesRepositoryImpl(private val appDatabase: AppDatabase, private val trackDbConvertor: TrackDbConvertor) : FavouritesRepository {
@@ -17,13 +15,13 @@ class FavouritesRepositoryImpl(private val appDatabase: AppDatabase, private val
     }
 
     override suspend fun addTrackToFavourites(track: Track) {
-        val trackEntity = trackDbConvertor.map(track)
+        val dateSaved = System.currentTimeMillis()
+        val trackEntity = trackDbConvertor.map(track, dateSaved)
         appDatabase.getTrackDao().insertNewTrack(trackEntity)
     }
 
     override suspend fun removeTrackFromFavourites(track: Track) {
-        val trackEntity = trackDbConvertor.map(track)
-        appDatabase.getTrackDao().deleteTrackEntity(trackEntity)
+        appDatabase.getTrackDao().deleteTrackById(track.trackId)
     }
 
     override fun favouriteTracks(): Flow<List<Track>> {

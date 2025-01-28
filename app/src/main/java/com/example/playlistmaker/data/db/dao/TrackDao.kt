@@ -16,13 +16,11 @@ interface TrackDao {
     @Delete(entity = TrackEntity::class)
     suspend fun deleteTrackEntity(trackEntity: TrackEntity)
 
-    // метод @Query для получения списка со всеми треками, добавленными в избранное
-    @Query("SELECT * FROM track_table")
-    fun getTracks(): Flow<List<TrackEntity>>
+    @Query("DELETE FROM track_table WHERE track_id = :trackId")
+    suspend fun deleteTrackById(trackId: Int)
 
-    // метод @Query для получения списка идентификаторов всех треков, которые добавлены в избранное
-    @Query("SELECT track_id FROM track_table")
-    suspend fun getTracksId(): List<Int>
+    @Query("SELECT * FROM track_table ORDER BY dateSaved DESC")
+    fun getTracks(): Flow<List<TrackEntity>>
 
     @Query("SELECT COUNT(*) FROM track_table WHERE track_id = :trackId")
     fun isTrackFavourite(trackId: Int): Flow<Int>
