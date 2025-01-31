@@ -22,7 +22,11 @@
         android:id="@+id/libraryFragment"
         android:name="com.example.playlistmaker.ui.library.activity.LibraryFragment"
         android:label="library_fragment"
-        tools:layout="@layout/library_fragment"/>
+        tools:layout="@layout/library_fragment">
+        <action
+            android:id="@+id/action_libraryFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.playlistmaker.ui.settings.activity.SettingsFragment"

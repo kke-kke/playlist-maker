@@ -10,17 +10,6 @@ import com.example.playlistmaker.databinding.LibraryFragmentBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
 class LibraryFragment : Fragment() {
-    companion object {
-        private const val TRACK_ID = "track_id"
-        private const val PLAYLIST_ID = "playlist_id"
-
-        fun newInstance(trackId: String, playlistId: String) = LibraryFragment().apply {
-            arguments = Bundle().apply {
-                putString(TRACK_ID, trackId)
-                putString(PLAYLIST_ID, playlistId)
-            }
-        }
-    }
 
     private lateinit var libraryBinding: LibraryFragmentBinding
     private lateinit var tabMediator: TabLayoutMediator
@@ -33,10 +22,7 @@ class LibraryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val trackId = arguments?.getString(TRACK_ID) ?: ""
-        val playlistId = arguments?.getString(PLAYLIST_ID) ?: ""
-
-        libraryBinding.libraryViewPager.adapter = LibraryPagerAdapter(childFragmentManager, lifecycle, trackId, playlistId)
+        libraryBinding.libraryViewPager.adapter = LibraryPagerAdapter(childFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(libraryBinding.libraryTabLayout, libraryBinding.libraryViewPager) { tab, position ->
             when (position) {

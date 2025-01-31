@@ -26,8 +26,8 @@ val viewModelModule = module {
         SettingsViewModel(get(), get())
     }
 
-    viewModel {(trackId: String) ->
-        FavouritesViewModel(trackId, get())
+    viewModel {
+        FavouritesViewModel(get())
     }
 
     viewModel {(playlistId: String) ->
