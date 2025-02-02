@@ -9,6 +9,7 @@ import com.example.playlistmaker.di.repositoryModule
 import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.utils.Constants.SETTINGS_PREFERENCES
 import com.example.playlistmaker.utils.Constants.THEME_KEY
+import com.markodevcic.peko.PermissionRequester
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -21,6 +22,7 @@ class App : Application() {
             modules(repositoryModule, dataModule, viewModelModule, interactorModule)
         }
         applyThemeFromPreferences()
+        PermissionRequester.initialize(applicationContext)
     }
 
     private fun applyThemeFromPreferences() {
