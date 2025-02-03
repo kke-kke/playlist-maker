@@ -22,9 +22,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.CreatePlaylistBinding
+import com.example.playlistmaker.domain.library.models.Playlist
+import com.example.playlistmaker.ui.library.viewModel.PlaylistsViewModel
 import com.markodevcic.peko.PermissionRequester
 import com.markodevcic.peko.PermissionResult
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
@@ -33,6 +36,8 @@ class CreatePlaylistFragment : Fragment() {
     private val requester = PermissionRequester.instance()
     private lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
     private var isCoverSelected = false
+    private var savedCoverUri: Uri? = null
+    private val playlistsViewModel by viewModel<PlaylistsViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         createPlaylistBinding = CreatePlaylistBinding.inflate(inflater, container, false)
@@ -54,7 +59,7 @@ class CreatePlaylistFragment : Fragment() {
                 if (uri != null) {
                     createPlaylistBinding.playlistCoverImageContainer.background = null
                     createPlaylistBinding.playlistCoverImage.setImageURI(uri)
-                    saveImageToPrivateStorage(uri)
+                    savedCoverUri = saveImageToPrivateStorage(uri)
                     isCoverSelected = true
                 } else {
                     Log.d("PhotoPicker", "No media selected")
@@ -75,6 +80,16 @@ class CreatePlaylistFragment : Fragment() {
 
         createPlaylistBinding.playlistCoverImageContainer.setOnClickListener {
             requestStoragePermission()
+        }
+
+        createPlaylistBinding.createPlaylistButton.setOnClickListener {
+            val name = createPlaylistBinding.playlistName.text.toString()
+            val description = createPlaylistBinding.playlistDescription.text.toString() ?: ""
+            val cover = savedCoverUri?.toString() ?: ""
+
+            playlistsViewModel.insertPlaylist(Playlist(0, name, description, cover, emptyList(), 0))
+            Toast.makeText(requireContext(), "Плейлист $name создан", Toast.LENGTH_LONG).show()
+            clearFields()
         }
     }
 
@@ -118,7 +133,7 @@ class CreatePlaylistFragment : Fragment() {
 
     }
 
-    private fun saveImageToPrivateStorage(uri: Uri) {
+    private fun saveImageToPrivateStorage(uri: Uri): Uri {
         val filePath = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
         if (!filePath.exists()){
             filePath.mkdirs()
@@ -133,6 +148,18 @@ class CreatePlaylistFragment : Fragment() {
 
         inputStream?.close()
         outputStream.close()
+
+        return Uri.fromFile(file)
     }
+
+    private fun clearFields() {
+        createPlaylistBinding.playlistName.text?.clear()
+        createPlaylistBinding.playlistDescription.text?.clear()
+        createPlaylistBinding.playlistCoverImage.setImageResource(R.drawable.ic_add_image)
+        createPlaylistBinding.playlistCoverImageContainer.setBackgroundResource(R.drawable.dash_rectangle)
+        savedCoverUri = null
+        isCoverSelected = false
+    }
+
 
 }
