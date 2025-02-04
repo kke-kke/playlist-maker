@@ -15,7 +15,7 @@ class PlaylistViewHolder(view: View): RecyclerView.ViewHolder(view) {
     fun bind(playlist: Playlist) {
         with(binding) {
             playlistNameCard.text = playlist.name
-            playlistSongCount.text = playlist.trackCount.toString()
+            playlistSongCount.text = outputFormat(playlist.trackCount)
 
             Glide.with(itemView.context)
                 .load(playlist.coverUri)
@@ -25,4 +25,20 @@ class PlaylistViewHolder(view: View): RecyclerView.ViewHolder(view) {
                 .into(playlistCover)
         }
     }
+
+    private fun outputFormat(count: Int): String {
+        val num = count % 10
+        val extra = count % 100
+
+        return if (extra in 11..19) {
+            "$count треков"
+        } else {
+            when (num) {
+                1 -> "$count трек"
+                2, 3, 4 -> "$count трека"
+                else -> "$count треков"
+            }
+        }
+    }
+
 }
