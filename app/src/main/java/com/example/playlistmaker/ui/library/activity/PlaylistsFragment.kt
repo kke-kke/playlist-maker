@@ -52,6 +52,7 @@ class PlaylistsFragment : Fragment() {
         playlistsBinding.noPlaylistsLayout.visibility = View.GONE
         playlistsBinding.playlistCardRecyclerView.visibility = View.VISIBLE
 
+        adapter.playlists.clear()
         adapter.playlists.addAll(playlists)
         adapter.notifyDataSetChanged()
     }
