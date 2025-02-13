@@ -6,23 +6,23 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.PlaylistCardBinding
+import com.example.playlistmaker.databinding.PlaylistLinearBinding
 import com.example.playlistmaker.domain.library.models.Playlist
 
-class PlaylistViewHolder(view: View): RecyclerView.ViewHolder(view) {
-    private val binding: PlaylistCardBinding = PlaylistCardBinding.bind(view)
+class PlaylistLinearViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private val binding: PlaylistLinearBinding = PlaylistLinearBinding.bind(view)
 
     fun bind(playlist: Playlist) {
         with(binding) {
-            playlistNameCard.text = playlist.name
-            playlistSongCount.text = outputFormat(playlist.trackCount)
+            playlistNameTextView.text = playlist.name
+            songQuantity.text = outputFormat(playlist.trackCount)
 
             Glide.with(itemView.context)
                 .load(playlist.coverUri)
                 .placeholder(R.drawable.ic_mock_cover)
                 .fitCenter()
                 .apply(RequestOptions.bitmapTransform(RoundedCorners(4)))
-                .into(playlistCover)
+                .into(playlistCoverImage)
         }
     }
 
@@ -40,5 +40,4 @@ class PlaylistViewHolder(view: View): RecyclerView.ViewHolder(view) {
             }
         }
     }
-
 }
