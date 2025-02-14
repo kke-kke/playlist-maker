@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.library.api.PlaylistsInteractor
 import com.example.playlistmaker.domain.library.models.Playlist
+import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) : ViewModel(){
@@ -15,11 +16,14 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) :
     private val _playlist = MutableLiveData<Playlist?>()
     val playlist: LiveData<Playlist?> get() = _playlist
 
+    private val _addTrackStatus = MutableLiveData<AddTrackState?>()
+    val addTrackStatus: LiveData<AddTrackState?> = _addTrackStatus
+
     init {
         loadPlaylists()
     }
 
-    private fun loadPlaylists() {
+    fun loadPlaylists() {
         viewModelScope.launch {
             playlistsInteractor.getAllPlaylists()
                 .collect { playlists ->
@@ -35,17 +39,19 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) :
         }
     }
 
-    fun updateTrackIds(playlistId: Int, newTrackIds: List<Int>) {
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         viewModelScope.launch {
-            playlistsInteractor.updateTrackIds(playlistId, newTrackIds)
-            loadPlaylists()
+            val isAdded = playlistsInteractor.addTrackToPlaylist(track, playlist)
+            if (isAdded) {
+                _addTrackStatus.postValue(AddTrackState.Success(playlist.name))
+                loadPlaylists()
+            } else {
+                _addTrackStatus.postValue(AddTrackState.Error("Трек уже добавлен в плейлист ${playlist.name}"))
+            }
         }
     }
 
-    fun getPlaylistById(id: Int) {
-        viewModelScope.launch {
-            val result = playlistsInteractor.getPlaylistById(id)
-            _playlist.postValue(result)
-        }
+    fun clearAddTrackStatus() {
+        _addTrackStatus.value = null
     }
 }
