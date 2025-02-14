@@ -26,19 +26,11 @@ class PlaylistCardViewHolder(view: View): RecyclerView.ViewHolder(view) {
         }
     }
 
-    private fun outputFormat(count: Int): String {
-        val num = count % 10
-        val extra = count % 100
-
-        return if (extra in 11..19) {
-            "$count треков"
-        } else {
-            when (num) {
-                1 -> "$count трек"
-                2, 3, 4 -> "$count трека"
-                else -> "$count треков"
-            }
-        }
+    private fun outputFormat(count: Int): String = when {
+        count % 100 in 11..19 -> "$count треков"
+        count % 10 == 1 -> "$count трек"
+        count % 10 in 2..4 -> "$count трека"
+        else -> "$count треков"
     }
 
 }

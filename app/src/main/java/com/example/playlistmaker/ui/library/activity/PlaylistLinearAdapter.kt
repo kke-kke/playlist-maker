@@ -20,7 +20,12 @@ class PlaylistLinearAdapter() : RecyclerView.Adapter<PlaylistLinearViewHolder>()
     }
 
     override fun onBindViewHolder(holder: PlaylistLinearViewHolder, position: Int) {
-        holder.bind(playlists[position])
+        val playlist = playlists[position]
+        holder.bind(playlist)
+
+        holder.itemView.setOnClickListener {
+            onPlaylistClick?.invoke(playlist)
+        }
     }
 
 }

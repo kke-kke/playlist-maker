@@ -16,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class PlaylistsFragment : Fragment() {
     private lateinit var playlistsBinding: PlaylistsFragmentBinding
     private val playlistsViewModel by viewModel<PlaylistsViewModel>()
-    private val adapter = PlaylistAdapter()
+    private val adapter = PlaylistCardAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         playlistsBinding = PlaylistsFragmentBinding.inflate(inflater, container, false)
