@@ -1,7 +1,9 @@
 package com.example.playlistmaker.data.db.converters
 
 import com.example.playlistmaker.data.db.PlaylistEntity
+import com.example.playlistmaker.data.db.PlaylistTrackEntity
 import com.example.playlistmaker.domain.library.models.Playlist
+import com.example.playlistmaker.domain.search.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -22,5 +24,13 @@ class PlaylistDbConvertor {
             playlist.coverUri,
             Gson().toJson(playlist.trackIds),
             playlist.trackCount)
+    }
+
+    fun map(track: Track): PlaylistTrackEntity {
+        return PlaylistTrackEntity(
+            track.trackId,
+            track.trackName,
+            track.artistName
+        )
     }
 }
