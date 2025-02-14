@@ -13,21 +13,35 @@
         android:id="@+id/libraryCreatePlaylist"
         style="@style/RefreshSearchButton"/>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_44"
-        android:layout_gravity="center"
-        android:id="@+id/noPlaylistsPlaceholder"
-        android:src="@drawable/nothing_found" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playlistCardRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/button_radius"/>
 
-    <TextView
-        android:id="@+id/nothingInFavouritesText"
+    <LinearLayout
+        android:id="@+id/noPlaylistsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginVertical="@dimen/menu_primary_margin"
-        android:text="@string/library_no_playlists"
-        android:textAppearance="@style/SearchErrorText" />
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_44"
+            android:layout_gravity="center"
+            android:id="@+id/noPlaylistsPlaceholder"
+            android:src="@drawable/nothing_found" />
+
+        <TextView
+            android:id="@+id/nothingInFavouritesText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginVertical="@dimen/menu_primary_margin"
+            android:text="@string/library_no_playlists"
+            android:textAppearance="@style/SearchErrorText" />
+    </LinearLayout>
 
 </LinearLayout>
