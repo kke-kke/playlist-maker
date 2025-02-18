@@ -56,6 +56,7 @@ class PlayerFragment : Fragment() {
         initBottomSheet()
         initRecyclerView()
         observeViewModels()
+        favouritesViewModel.isTrackFavourite(track.trackId)
         observeFavouriteState()
     }
 
