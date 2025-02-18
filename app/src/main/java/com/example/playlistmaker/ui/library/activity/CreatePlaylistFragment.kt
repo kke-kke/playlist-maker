@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
@@ -69,6 +70,16 @@ class CreatePlaylistFragment : Fragment() {
         initClickListeners()
     }
 
+    override fun onResume() {
+        super.onResume()
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+    }
+
     private fun initClickListeners() {
         createPlaylistBinding.createPlaylistToolbar.setOnClickListener {
             if (isPlaylistModified()) {
@@ -89,7 +100,7 @@ class CreatePlaylistFragment : Fragment() {
 
             playlistsViewModel.insertPlaylist(Playlist(0, name, description, cover, emptyList(), 0))
             Toast.makeText(requireContext(), "Плейлист $name создан", Toast.LENGTH_LONG).show()
-            clearFields()
+            findNavController().navigateUp()
         }
     }
 
@@ -151,15 +162,5 @@ class CreatePlaylistFragment : Fragment() {
 
         return Uri.fromFile(file)
     }
-
-    private fun clearFields() {
-        createPlaylistBinding.playlistName.text?.clear()
-        createPlaylistBinding.playlistDescription.text?.clear()
-        createPlaylistBinding.playlistCoverImage.setImageResource(R.drawable.ic_add_image)
-        createPlaylistBinding.playlistCoverImageContainer.setBackgroundResource(R.drawable.dash_rectangle)
-        savedCoverUri = null
-        isCoverSelected = false
-    }
-
 
 }
