@@ -27,6 +27,7 @@ class PlaylistsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         playlistsBinding.playlistCardRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        playlistsBinding.playlistCardRecyclerView.addItemDecoration(GridSpacingItemDecoration(2, 8, 16))
         playlistsBinding.playlistCardRecyclerView.adapter = adapter
 
         playlistsViewModel.playlists.observe(viewLifecycleOwner) { playlists ->
