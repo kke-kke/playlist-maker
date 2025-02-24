@@ -33,6 +33,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_libraryFragment_to_playlistInfoFragment"
+            app:destination="@id/playlistInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -57,4 +60,9 @@
         android:name="com.example.playlistmaker.ui.library.activity.CreatePlaylistFragment"
         android:label="create_playlist"
         tools:layout="@layout/create_playlist" />
+    <fragment
+        android:id="@+id/playlistInfoFragment"
+        android:name="com.example.playlistmaker.ui.library.activity.PlaylistInfoFragment"
+        android:label="playlist_info_fragment"
+        tools:layout="@layout/playlist_info_fragment" />
 </navigation>
