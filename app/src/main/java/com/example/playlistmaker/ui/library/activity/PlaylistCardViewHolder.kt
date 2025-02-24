@@ -15,22 +15,19 @@ class PlaylistCardViewHolder(view: View): RecyclerView.ViewHolder(view) {
     fun bind(playlist: Playlist) {
         with(binding) {
             playlistNameCard.text = playlist.name
-            playlistSongCount.text = outputFormat(playlist.trackCount)
 
-            Glide.with(itemView.context)
-                .load(playlist.coverUri)
+            val context = itemView.context
+            val count = playlist.trackCount
+
+            playlistSongCount.text = context.resources.getQuantityString(R.plurals.tracks_count, playlist.trackCount, playlist.trackCount)
+
+            Glide.with(context)
+                .load(playlist.coverUri.takeIf { it.isNotEmpty() } ?: R.drawable.ic_mock_cover)
                 .placeholder(R.drawable.ic_mock_cover)
                 .fitCenter()
-                .apply(RequestOptions.bitmapTransform(RoundedCorners(4)))
+                .apply(RequestOptions.bitmapTransform(RoundedCorners(8)))
                 .into(playlistCover)
         }
-    }
-
-    private fun outputFormat(count: Int): String = when {
-        count % 100 in 11..19 -> "$count треков"
-        count % 10 == 1 -> "$count трек"
-        count % 10 in 2..4 -> "$count трека"
-        else -> "$count треков"
     }
 
 }

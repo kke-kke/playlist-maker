@@ -15,9 +15,11 @@ class PlaylistLinearViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     fun bind(playlist: Playlist) {
         with(binding) {
             playlistNameTextView.text = playlist.name
-            songQuantity.text = outputFormat(playlist.trackCount)
+            val context = itemView.context
 
-            Glide.with(itemView.context)
+            songQuantity.text = context.resources.getQuantityString(R.plurals.tracks_count, playlist.trackCount, playlist.trackCount)
+
+            Glide.with(context)
                 .load(playlist.coverUri)
                 .placeholder(R.drawable.ic_mock_cover)
                 .fitCenter()
@@ -26,10 +28,4 @@ class PlaylistLinearViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
     }
 
-    private fun outputFormat(count: Int): String = when {
-        count % 100 in 11..19 -> "$count треков"
-        count % 10 == 1 -> "$count трек"
-        count % 10 in 2..4 -> "$count трека"
-        else -> "$count треков"
-    }
 }
