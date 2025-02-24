@@ -26,8 +26,12 @@ class MainActivity : AppCompatActivity() {
         mainBinding.bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            mainBinding.bottomNavigationView.isVisible = destination.id != R.id.playerFragment && destination.id != R.id.createPlaylistFragment
-            mainBinding.navBarDivider.isVisible = destination.id != R.id.playerFragment && destination.id != R.id.createPlaylistFragment
+            mainBinding.bottomNavigationView.isVisible = destination.id != R.id.playerFragment
+                    && destination.id != R.id.createPlaylistFragment
+                    && destination.id != R.id.playlistInfoFragment
+            mainBinding.navBarDivider.isVisible = destination.id != R.id.playerFragment
+                    && destination.id != R.id.createPlaylistFragment
+                    && destination.id != R.id.playlistInfoFragment
         }
 
         mainBinding.bottomNavigationView.setOnItemSelectedListener { item ->
