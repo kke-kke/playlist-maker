@@ -30,7 +30,18 @@ class PlaylistDbConvertor {
         return PlaylistTrackEntity(
             track.trackId,
             track.trackName,
-            track.artistName
+            track.artistName,
+            track.trackTime
+        )
+    }
+
+    fun map(playlistTrackEntity: PlaylistTrackEntity): Track {
+        return Track(
+            playlistTrackEntity.trackId,
+            playlistTrackEntity.trackTitle,
+            playlistTrackEntity.artist,
+            playlistTrackEntity.trackTimeMillis,
+            "", "", "", "", "", ""
         )
     }
 }

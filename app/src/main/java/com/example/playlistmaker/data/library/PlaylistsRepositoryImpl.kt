@@ -48,4 +48,10 @@ class PlaylistsRepositoryImpl(private val appDatabase: AppDatabase, private val 
 
         return true
     }
+
+    override suspend fun getTracksByIds(trackIds: List<Int>): List<Track> {
+        return playlistTrackDao.getTracksByIds(trackIds).map { trackEntity ->
+            playlistConvertor.map(trackEntity)
+        }
+    }
 }

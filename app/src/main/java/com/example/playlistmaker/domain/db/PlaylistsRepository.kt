@@ -10,4 +10,5 @@ interface PlaylistsRepository {
     suspend fun updateTrackIds(playlistId: Int, newTrackIds: List<Int>)
     suspend fun getPlaylistById(id: Int): Playlist?
     suspend fun addTrackToPlaylist(track: Track, playlist: Playlist): Boolean
+    suspend fun getTracksByIds(trackIds: List<Int>): List<Track>
 }

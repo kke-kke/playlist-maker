@@ -19,11 +19,14 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) :
     private val _addTrackStatus = MutableLiveData<AddTrackState?>()
     val addTrackStatus: LiveData<AddTrackState?> = _addTrackStatus
 
+    private val _playlistDuration = MutableLiveData<Long>()
+    val playlistDuration: LiveData<Long> get() = _playlistDuration
+
     init {
         loadPlaylists()
     }
 
-    fun loadPlaylists() {
+    private fun loadPlaylists() {
         viewModelScope.launch {
             playlistsInteractor.getAllPlaylists()
                 .collect { playlists ->
@@ -53,5 +56,12 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) :
 
     fun clearAddTrackStatus() {
         _addTrackStatus.value = null
+    }
+
+    fun calculatePlaylistDuration(trackIds: List<Int>) {
+        viewModelScope.launch {
+            val duration = playlistsInteractor.getPlaylistDuration(trackIds)
+            _playlistDuration.postValue(duration)
+        }
     }
 }

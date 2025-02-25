@@ -8,5 +8,6 @@ data class PlaylistTrackEntity(
     @PrimaryKey
     val trackId: Int,
     val trackTitle: String,
-    val artist: String
+    val artist: String,
+    val trackTimeMillis: Long
 )

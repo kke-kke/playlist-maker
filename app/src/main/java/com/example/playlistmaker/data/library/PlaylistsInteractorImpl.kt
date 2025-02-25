@@ -5,6 +5,8 @@ import com.example.playlistmaker.domain.library.api.PlaylistsInteractor
 import com.example.playlistmaker.domain.library.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.flow.Flow
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PlaylistsInteractorImpl(private val playlistsRepository: PlaylistsRepository): PlaylistsInteractor {
     override fun getAllPlaylists(): Flow<List<Playlist>> {
@@ -25,5 +27,14 @@ class PlaylistsInteractorImpl(private val playlistsRepository: PlaylistsReposito
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist): Boolean {
         return playlistsRepository.addTrackToPlaylist(track, playlist)
+    }
+
+    override suspend fun getPlaylistDuration(trackIds: List<Int>): Long {
+        val tracks = playlistsRepository.getTracksByIds(trackIds)
+        val durationSumMillis = tracks.sumOf { it.trackTime }
+
+        val totalMinutes = SimpleDateFormat("mm", Locale.getDefault()).format(durationSumMillis).toLong()
+
+        return totalMinutes
     }
 }
