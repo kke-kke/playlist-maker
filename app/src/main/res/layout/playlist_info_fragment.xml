@@ -163,7 +163,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
-        app:behavior_hideable="true"
+        app:behavior_hideable="false"
         app:behavior_peekHeight="@dimen/dimen_232"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
