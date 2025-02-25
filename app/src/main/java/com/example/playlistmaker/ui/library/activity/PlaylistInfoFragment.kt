@@ -42,6 +42,16 @@ class PlaylistInfoFragment : Fragment() {
         playlistInfoBinding.tracksInPlaylistRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         playlistInfoBinding.tracksInPlaylistRecyclerView.adapter = adapter
 
+        playlistsViewModel.loadTracks(playlist.trackIds)
+
+        playlistsViewModel.tracks.observe(viewLifecycleOwner) { tracks ->
+            if (!tracks.isNullOrEmpty()) {
+                adapter.tracks.clear()
+                adapter.tracks.addAll(tracks)
+                adapter.notifyDataSetChanged()
+            }
+        }
+
         initClickListeners()
         initBottomSheet()
     }

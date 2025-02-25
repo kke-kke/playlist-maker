@@ -22,6 +22,9 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) :
     private val _playlistDuration = MutableLiveData<Long>()
     val playlistDuration: LiveData<Long> get() = _playlistDuration
 
+    private val _tracks = MutableLiveData<List<Track>>()
+    val tracks: LiveData<List<Track>> get() = _tracks
+
     init {
         loadPlaylists()
     }
@@ -32,6 +35,12 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) :
                 .collect { playlists ->
                     _playlists.postValue(playlists)
                 }
+        }
+    }
+
+    fun loadTracks(trackIds: List<Int>) {
+        viewModelScope.launch {
+            _tracks.postValue(playlistsInteractor.getTracksByIds(trackIds))
         }
     }
 
