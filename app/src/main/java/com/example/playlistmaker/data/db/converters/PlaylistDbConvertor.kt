@@ -31,7 +31,13 @@ class PlaylistDbConvertor {
             track.trackId,
             track.trackName,
             track.artistName,
-            track.trackTime
+            track.trackTime,
+            track.artworkUrl,
+            track.previewUrl,
+            track.collectionName,
+            track.releaseDate,
+            track.primaryGenreName,
+            track.country
         )
     }
 
@@ -41,7 +47,12 @@ class PlaylistDbConvertor {
             playlistTrackEntity.trackTitle,
             playlistTrackEntity.artist,
             playlistTrackEntity.trackTimeMillis,
-            "", "", "", "", "", ""
+            playlistTrackEntity.artworkUrl100,
+            playlistTrackEntity.previewUrl,
+            playlistTrackEntity.collectionName,
+            playlistTrackEntity.releaseDate,
+            playlistTrackEntity.primaryGenreName,
+            playlistTrackEntity.country
         )
     }
 }

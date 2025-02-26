@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.library.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistInfoFragmentBinding
 import com.example.playlistmaker.domain.library.models.Playlist
+import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.library.viewModel.PlaylistsViewModel
+import com.example.playlistmaker.ui.player.activity.PlayerFragment
 import com.example.playlistmaker.ui.search.activity.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,6 +53,10 @@ class PlaylistInfoFragment : Fragment() {
             }
         }
 
+        adapter.onItemClick = { track ->
+            startPlayerActivity(track)
+        }
+
         initClickListeners()
         initBottomSheet()
     }
@@ -67,20 +72,6 @@ class PlaylistInfoFragment : Fragment() {
         bottomSheetBehavior = BottomSheetBehavior.from(playlistInfoBinding.playlistsBottomSheet).apply {
             state = BottomSheetBehavior.STATE_HALF_EXPANDED
 
-            addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    when (newState) {
-                        BottomSheetBehavior.STATE_HIDDEN, BottomSheetBehavior.STATE_EXPANDED -> {
-                            playlistInfoBinding.overlay.visibility = View.GONE
-                        }
-                        else -> {
-                            playlistInfoBinding.overlay.visibility = View.VISIBLE
-                        }
-                    }
-                }
-
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-            })
         }
 
     }
@@ -100,13 +91,15 @@ class PlaylistInfoFragment : Fragment() {
             playlistDescriptionTextView.text = playlist.description
             trackQuantityTextView.text = requireContext().resources.getQuantityString(R.plurals.tracks_count, playlist.trackCount, playlist.trackCount)
 
-            Log.d("PlaylistInfoFragment", " In bind")
             playlistsViewModel.playlistDuration.observe(viewLifecycleOwner) { minutes ->
-                Log.d("PlaylistInfoFragment", " In observe")
                 minutesTotalTextView.text = requireContext().resources.getQuantityString(R.plurals.minutes_count, minutes.toInt(), minutes.toInt())
             }
             playlistsViewModel.calculatePlaylistDuration(playlist.trackIds)
         }
+    }
+
+    private fun startPlayerActivity(track: Track) {
+        findNavController().navigate(R.id.action_playlistInfoFragment_to_playerFragment, PlayerFragment.createArgs(track))
     }
 
     companion object {
