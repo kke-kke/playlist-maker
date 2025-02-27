@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -114,7 +115,7 @@ class PlaylistInfoFragment : Fragment() {
         }
 
         playlistInfoBinding.shareButtonPlaylist.setOnClickListener {
-            playlistsViewModel.sharePlaylist(requireContext(), playlist)
+            sharePlaylist()
         }
 
         playlistInfoBinding.menuButtonPlaylist.setOnClickListener {
@@ -127,7 +128,7 @@ class PlaylistInfoFragment : Fragment() {
         }
 
         playlistInfoBinding.menuShare.setOnClickListener{
-            playlistsViewModel.sharePlaylist(requireContext(), playlist)
+            sharePlaylist()
         }
 
 //        playlistInfoBinding.menuEditInfo.setOnClickListener{  }
@@ -182,6 +183,14 @@ class PlaylistInfoFragment : Fragment() {
                 getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(context.getColor(R.color.main_background_color))
                 getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(context.getColor(R.color.main_background_color))
             }
+    }
+
+    private fun sharePlaylist() {
+        if (playlist.trackIds.isNotEmpty()) {
+            playlistsViewModel.sharePlaylist(requireContext(), playlist)
+        } else {
+            Toast.makeText(requireContext(), "В этом плейлисте нет списка треков, которым можно поделиться", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun bindPlaylist(playlist: Playlist) {
