@@ -13,4 +13,5 @@ interface PlaylistsInteractor {
     suspend fun getPlaylistDuration(trackIds: List<Int>): Long
     suspend fun getTracksByIds(trackIds: List<Int>): List<Track>
     suspend fun removeTrackFromPlaylist(trackId: Int, playlistId: Int, updatedTrackIds: List<Int>)
+    suspend fun deletePlaylist(playlistId: Int)
 }

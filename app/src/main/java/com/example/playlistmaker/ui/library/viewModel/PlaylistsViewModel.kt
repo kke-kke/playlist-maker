@@ -33,6 +33,9 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor, p
         return _tracksMap.getOrPut(playlistId) { MutableLiveData() }
     }
 
+    private val _deletionState = MutableLiveData<Boolean>()
+    val deletionState: LiveData<Boolean> get() = _deletionState
+
     init {
         loadPlaylists()
     }
@@ -118,6 +121,17 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor, p
                 context.resources.getQuantityString(R.plurals.tracks_count, playlist.trackCount, playlist.trackCount),
                 trackList
             )
+        }
+    }
+
+    fun deletePlaylist(playlistId: Int) {
+        viewModelScope.launch {
+            try {
+                playlistsInteractor.deletePlaylist(playlistId)
+                _deletionState.postValue(true)
+            } catch (e: Exception) {
+                _deletionState.postValue(false)
+            }
         }
     }
 }

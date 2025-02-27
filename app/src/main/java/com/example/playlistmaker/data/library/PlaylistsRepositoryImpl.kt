@@ -63,4 +63,9 @@ class PlaylistsRepositoryImpl(private val appDatabase: AppDatabase, private val 
 
         playlistDao.updateTrackIdsInPlaylist(playlistId, newTrackIds, newTrackCount)
     }
+
+    override suspend fun deletePlaylist(playlistId: Int) {
+        playlistTrackDao.deleteTracksByPlaylistId(playlistId)
+        playlistDao.deletePlaylistById(playlistId)
+    }
 }

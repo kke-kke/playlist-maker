@@ -70,6 +70,12 @@ class PlaylistInfoFragment : Fragment() {
                 R.plurals.minutes_count, minutes.toInt(), minutes.toInt()
             )
         }
+
+        playlistsViewModel.deletionState.observe(viewLifecycleOwner) { isDeleted ->
+            if (isDeleted) {
+                findNavController().navigateUp()
+            }
+        }
     }
 
     private fun showDeleteTrackDialog(track: Track) {
@@ -119,6 +125,16 @@ class PlaylistInfoFragment : Fragment() {
         playlistInfoBinding.overlay.setOnClickListener {
             menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
+
+        playlistInfoBinding.menuShare.setOnClickListener{
+            playlistsViewModel.sharePlaylist(requireContext(), playlist)
+        }
+
+//        playlistInfoBinding.menuEditInfo.setOnClickListener{  }
+
+        playlistInfoBinding.menuDetelePlaylist.setOnClickListener {
+            showDeleteConfirmationDialog()
+        }
     }
 
     private fun initBottomSheet() {
@@ -152,6 +168,20 @@ class PlaylistInfoFragment : Fragment() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
         }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setMessage("Хотите удалить плейлист \"${playlist.name}\"?")
+            .setPositiveButton("ДА") { _, _ ->
+                playlistsViewModel.deletePlaylist(playlist.id)
+            }
+            .setNegativeButton("НЕТ", null)
+            .show()
+            .apply {
+                getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(context.getColor(R.color.main_background_color))
+                getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(context.getColor(R.color.main_background_color))
+            }
     }
 
     private fun bindPlaylist(playlist: Playlist) {
