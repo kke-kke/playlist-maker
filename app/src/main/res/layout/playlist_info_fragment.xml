@@ -179,4 +179,102 @@
             tools:listitem="@layout/search_result" />
 
     </LinearLayout>
+
+    <View android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dimmed_black"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/menuBottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bottom_sheet_background"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="500dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <View
+            android:id="@+id/menuBottomSheetLine"
+            android:layout_width="@dimen/refresh_button_radius"
+            android:layout_height="@dimen/padding_4"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/menu_end_margin"
+            android:layout_marginBottom="@dimen/toolbar_primary_margin"
+            android:background="?android:attr/colorBackground" />
+
+        <LinearLayout
+            android:id="@+id/menuPlaylistLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/menu_end_margin"
+            android:paddingHorizontal="@dimen/toolbar_primary_margin"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/menuPlaylistCoverImage"
+                android:layout_width="@dimen/dimen_44"
+                android:layout_height="@dimen/dimen_44"
+                android:src="@drawable/ic_mock_cover"
+                android:scaleType="centerCrop" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:padding="@dimen/menu_end_margin">
+
+                <TextView
+                    android:id="@+id/menuPlaylistNameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    style="@style/BigTextRecycler"/>
+
+                <TextView
+                    android:id="@+id/menuSongQuantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    style="@style/SmallTextRecycler"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/menuShare"
+            android:paddingHorizontal="@dimen/menu_primary_margin"
+            android:paddingVertical="@dimen/dimen_20"
+            android:text="@string/share2"
+            android:textAppearance="@style/MenuItemTextView" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/menuEditInfo"
+            android:paddingHorizontal="@dimen/menu_primary_margin"
+            android:paddingVertical="@dimen/dimen_20"
+            android:text="@string/edit_info"
+            android:textAppearance="@style/MenuItemTextView" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/menuDetelePlaylist"
+            android:paddingHorizontal="@dimen/menu_primary_margin"
+            android:paddingVertical="@dimen/dimen_20"
+            android:text="@string/delete_playlist"
+            android:textAppearance="@style/MenuItemTextView" />
+
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

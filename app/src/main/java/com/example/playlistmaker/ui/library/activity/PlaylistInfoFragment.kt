@@ -29,6 +29,7 @@ class PlaylistInfoFragment : Fragment() {
     private val playlistsViewModel by viewModel<PlaylistsViewModel>()
     private val adapter = TrackAdapter()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var menuBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         playlistInfoBinding = PlaylistInfoFragmentBinding.inflate(inflater, container, false)
@@ -105,19 +106,47 @@ class PlaylistInfoFragment : Fragment() {
         playlistInfoBinding.playlistInfoToolbar.setOnClickListener {
             findNavController().navigateUp()
         }
+
+        playlistInfoBinding.menuButtonPlaylist.setOnClickListener {
+            bindMenuPlaylist(playlist)
+            menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        }
+
+        playlistInfoBinding.overlay.setOnClickListener {
+            menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
     }
 
     private fun initBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from(playlistInfoBinding.playlistsBottomSheet).apply {
             state = BottomSheetBehavior.STATE_COLLAPSED
+
+            playlistInfoBinding.buttonsLayout.post {
+                val screenHeight = resources.displayMetrics.heightPixels
+                val buttonsBottom = playlistInfoBinding.buttonsLayout.bottom + 24
+                val peekHeight = screenHeight - buttonsBottom
+
+                bottomSheetBehavior.peekHeight = peekHeight
+            }
         }
 
-        playlistInfoBinding.buttonsLayout.post {
-            val screenHeight = resources.displayMetrics.heightPixels
-            val buttonsY = playlistInfoBinding.buttonsLayout.y.toInt()
-            val peekHeight = screenHeight - buttonsY
+        menuBottomSheetBehavior = BottomSheetBehavior.from(playlistInfoBinding.menuBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
 
-            bottomSheetBehavior.peekHeight = peekHeight
+            addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    when (newState) {
+                        BottomSheetBehavior.STATE_HIDDEN, BottomSheetBehavior.STATE_EXPANDED -> {
+                            playlistInfoBinding.overlay.visibility = View.GONE
+                        }
+                        else -> {
+                            playlistInfoBinding.overlay.visibility = View.VISIBLE
+                        }
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            })
         }
     }
 
@@ -137,6 +166,22 @@ class PlaylistInfoFragment : Fragment() {
             trackQuantityTextView.text = requireContext().resources.getQuantityString(R.plurals.tracks_count, playlist.trackCount, playlist.trackCount)
 
             playlistsViewModel.calculatePlaylistDuration(playlist.trackIds)
+        }
+    }
+
+    private fun bindMenuPlaylist(playlist: Playlist){
+        with(playlistInfoBinding) {
+            Glide.with(playlistInfoBinding.menuPlaylistCoverImage)
+                .load(playlist.coverUri)
+                .placeholder(R.drawable.ic_mock_cover)
+                .error(R.drawable.ic_mock_cover)
+                .fallback(R.drawable.ic_mock_cover)
+                .fitCenter()
+                .apply(RequestOptions.bitmapTransform(RoundedCorners(4)))
+                .into(menuPlaylistCoverImage)
+
+            menuPlaylistNameTextView.text = playlist.name
+            menuSongQuantity.text = requireContext().resources.getQuantityString(R.plurals.tracks_count, playlist.trackCount, playlist.trackCount)
         }
     }
 
