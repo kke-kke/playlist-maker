@@ -109,7 +109,7 @@ class PlaylistInfoFragment : Fragment() {
 
     private fun initBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from(playlistInfoBinding.playlistsBottomSheet).apply {
-            state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
         playlistInfoBinding.buttonsLayout.post {
