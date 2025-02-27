@@ -7,6 +7,6 @@ data class Playlist(
     val name: String,
     val description: String,
     val coverUri: String,
-    val trackIds: List<Int>,
+    var trackIds: List<Int>,
     val trackCount: Int
 ) : Serializable

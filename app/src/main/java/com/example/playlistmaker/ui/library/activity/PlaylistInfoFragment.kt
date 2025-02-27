@@ -1,5 +1,6 @@
 package com.example.playlistmaker.ui.library.activity
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import com.example.playlistmaker.ui.library.viewModel.PlaylistsViewModel
 import com.example.playlistmaker.ui.player.activity.PlayerFragment
 import com.example.playlistmaker.ui.search.activity.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistInfoFragment : Fragment() {
@@ -38,47 +40,90 @@ class PlaylistInfoFragment : Fragment() {
 
         playlist = arguments?.getSerializable(PLAYLIST) as Playlist
 
-        bindPlaylist(playlistInfoBinding, playlist)
+        bindPlaylist(playlist)
+        setupRecyclerView()
+        initBottomSheet()
+        setupObservers()
+        initClickListeners()
 
+        playlistsViewModel.loadTracks(playlist.id, playlist.trackIds)
+
+    }
+
+    private fun setupRecyclerView() {
         playlistInfoBinding.tracksInPlaylistRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         playlistInfoBinding.tracksInPlaylistRecyclerView.adapter = adapter
 
-        playlistsViewModel.loadTracks(playlist.trackIds)
+        adapter.onItemClick = { track -> startPlayerActivity(track) }
+        adapter.onLongItemClick = { track -> showDeleteTrackDialog(track) }
+    }
 
-        playlistsViewModel.tracks.observe(viewLifecycleOwner) { tracks ->
-            if (!tracks.isNullOrEmpty()) {
-                adapter.tracks.clear()
-                adapter.tracks.addAll(tracks)
-                adapter.notifyDataSetChanged()
+    private fun setupObservers() {
+        playlistsViewModel.getTracksLiveData(playlist.id).observe(viewLifecycleOwner) { tracks ->
+            submitList(tracks)
+            updatePlaylistInfo(tracks)
+        }
+
+        playlistsViewModel.playlistDuration.observe(viewLifecycleOwner) { minutes ->
+            playlistInfoBinding.minutesTotalTextView.text = requireContext().resources.getQuantityString(
+                R.plurals.minutes_count, minutes.toInt(), minutes.toInt()
+            )
+        }
+    }
+
+    private fun showDeleteTrackDialog(track: Track) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage("Хотите удалить трек?")
+            .setPositiveButton("ДА") { _, _ ->
+                playlistsViewModel.removeTrack(track, playlist.id)
             }
-        }
+            .setNegativeButton("НЕТ", null)
+            .show()
+            .apply {
+                getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(context.getColor(R.color.main_background_color))
+                getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(context.getColor(R.color.main_background_color))
+            }
+    }
 
-        adapter.onItemClick = { track ->
-            startPlayerActivity(track)
-        }
+    private fun updatePlaylistInfo(tracks: List<Track>) {
+        playlistInfoBinding.trackQuantityTextView.text = requireContext().resources.getQuantityString(
+            R.plurals.tracks_count, tracks.size, tracks.size
+        )
 
-        initClickListeners()
-        initBottomSheet()
+        playlistsViewModel.calculatePlaylistDuration(tracks.map { it.trackId })
+    }
+
+    private fun submitList(tracks: List<Track>) {
+        if (!tracks.isNullOrEmpty()) {
+            adapter.tracks.clear()
+            adapter.tracks.addAll(tracks)
+            adapter.notifyDataSetChanged()
+        }
     }
 
     private fun initClickListeners() {
         playlistInfoBinding.playlistInfoToolbar.setOnClickListener {
             findNavController().navigateUp()
         }
-
     }
 
     private fun initBottomSheet() {
         bottomSheetBehavior = BottomSheetBehavior.from(playlistInfoBinding.playlistsBottomSheet).apply {
             state = BottomSheetBehavior.STATE_HALF_EXPANDED
-
         }
 
+        playlistInfoBinding.buttonsLayout.post {
+            val screenHeight = resources.displayMetrics.heightPixels
+            val buttonsY = playlistInfoBinding.buttonsLayout.y.toInt()
+            val peekHeight = screenHeight - buttonsY
+
+            bottomSheetBehavior.peekHeight = peekHeight
+        }
     }
 
-    private fun bindPlaylist(binding: PlaylistInfoFragmentBinding, playlist: Playlist) {
-        with(binding) {
-            Glide.with(binding.playlistCoverImage)
+    private fun bindPlaylist(playlist: Playlist) {
+        with(playlistInfoBinding) {
+            Glide.with(playlistInfoBinding.playlistCoverImage)
                 .load(playlist.coverUri)
                 .placeholder(R.drawable.ic_mock_cover)
                 .error(R.drawable.ic_mock_cover)
@@ -91,9 +136,6 @@ class PlaylistInfoFragment : Fragment() {
             playlistDescriptionTextView.text = playlist.description
             trackQuantityTextView.text = requireContext().resources.getQuantityString(R.plurals.tracks_count, playlist.trackCount, playlist.trackCount)
 
-            playlistsViewModel.playlistDuration.observe(viewLifecycleOwner) { minutes ->
-                minutesTotalTextView.text = requireContext().resources.getQuantityString(R.plurals.minutes_count, minutes.toInt(), minutes.toInt())
-            }
             playlistsViewModel.calculatePlaylistDuration(playlist.trackIds)
         }
     }

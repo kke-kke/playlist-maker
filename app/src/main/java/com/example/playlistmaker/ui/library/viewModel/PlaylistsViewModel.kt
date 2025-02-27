@@ -22,8 +22,11 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) :
     private val _playlistDuration = MutableLiveData<Long>()
     val playlistDuration: LiveData<Long> get() = _playlistDuration
 
-    private val _tracks = MutableLiveData<List<Track>>()
-    val tracks: LiveData<List<Track>> get() = _tracks
+    private val _tracksMap = mutableMapOf<Int, MutableLiveData<List<Track>>>()
+
+    fun getTracksLiveData(playlistId: Int): LiveData<List<Track>> {
+        return _tracksMap.getOrPut(playlistId) { MutableLiveData() }
+    }
 
     init {
         loadPlaylists()
@@ -38,9 +41,25 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) :
         }
     }
 
-    fun loadTracks(trackIds: List<Int>) {
+    fun loadTracks(playlistId: Int, trackIds: List<Int>) {
         viewModelScope.launch {
-            _tracks.postValue(playlistsInteractor.getTracksByIds(trackIds))
+            val tracks = playlistsInteractor.getTracksByIds(trackIds)
+            _tracksMap.getOrPut(playlistId) { MutableLiveData() }.apply {
+                postValue(emptyList())
+                postValue(tracks)
+            }
+        }
+    }
+
+    fun removeTrack(track: Track, playlistId: Int) {
+        viewModelScope.launch {
+            val updatedTrackIds = playlistsInteractor.getPlaylistById(playlistId)?.trackIds?.toMutableList()
+                ?.apply { remove(track.trackId) } ?: return@launch
+
+            playlistsInteractor.removeTrackFromPlaylist(track.trackId, playlistId, updatedTrackIds)
+
+            loadPlaylists()
+            loadTracks(playlistId, updatedTrackIds)
         }
     }
 
@@ -56,7 +75,14 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) :
             val isAdded = playlistsInteractor.addTrackToPlaylist(track, playlist)
             if (isAdded) {
                 _addTrackStatus.postValue(AddTrackState.Success(playlist.name))
-                loadPlaylists()
+
+                playlistsInteractor.getAllPlaylists().collect { playlists ->
+                    _playlists.postValue(playlists)
+
+                    playlists.forEach { updatedPlaylist ->
+                        loadTracks(updatedPlaylist.id, updatedPlaylist.trackIds)
+                    }
+                }
             } else {
                 _addTrackStatus.postValue(AddTrackState.Error("Трек уже добавлен в плейлист ${playlist.name}"))
             }

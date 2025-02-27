@@ -62,25 +62,27 @@
         <TextView
             android:id="@+id/playlistNameTextView"
             style="@style/BigTextStyle2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/menu_end_margin"
             android:ellipsize="end"
-            app:layout_constrainedWidth="true"
+            android:gravity="start"
             app:layout_constraintBottom_toTopOf="@id/playlistDescriptionTextView"
             app:layout_constraintStart_toStartOf="@id/left_guideline"
+            app:layout_constraintEnd_toStartOf="@id/right_guideline"
             app:layout_constraintTop_toBottomOf="@id/playlistCoverImage" />
 
         <TextView
             android:id="@+id/playlistDescriptionTextView"
             style="@style/SmallTextBlack"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/menu_end_margin"
             android:ellipsize="end"
-            app:layout_constrainedWidth="true"
+            android:gravity="start"
             app:layout_constraintBottom_toTopOf="@id/minutesAndQuantityLayout"
             app:layout_constraintStart_toStartOf="@id/left_guideline"
+            app:layout_constraintEnd_toStartOf="@id/right_guideline"
             app:layout_constraintTop_toBottomOf="@id/playlistNameTextView" />
 
         <LinearLayout
@@ -150,13 +152,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:id="@+id/overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/dimmed_black"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/playlistsBottomSheet"
         android:layout_width="match_parent"
@@ -164,7 +159,6 @@
         android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="@dimen/dimen_232"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View

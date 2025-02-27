@@ -35,23 +35,32 @@ class PlaylistsRepositoryImpl(private val appDatabase: AppDatabase, private val 
     }
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist): Boolean {
-        if (playlist.trackIds.contains(track.trackId)) {
+        val isAlreadyInPlaylist = playlistTrackDao.getTrackById(track.trackId, playlist.id) != null
+        if (isAlreadyInPlaylist) {
             return false
         }
 
-        playlistTrackDao.insertTrack(playlistConvertor.map(track))
-
+        playlistTrackDao.insertTrack(playlistConvertor.map(track, playlist.id))
         val updatedTrackIds = playlist.trackIds.toMutableList().apply { add(track.trackId) }
         val updatedTrackIdsJson = Gson().toJson(updatedTrackIds)
 
-        playlistDao.updateTrackIdsInPlaylist(playlistId = playlist.id, newTrackIds = updatedTrackIdsJson, newTrackCount = updatedTrackIds.size)
+        playlistDao.updateTrackIdsInPlaylist(playlist.id, updatedTrackIdsJson, updatedTrackIds.size)
 
         return true
     }
 
     override suspend fun getTracksByIds(trackIds: List<Int>): List<Track> {
-        return playlistTrackDao.getTracksByIds(trackIds).map { trackEntity ->
-            playlistConvertor.map(trackEntity)
-        }
+        return playlistTrackDao.getTracksByIds(trackIds)
+            .map { trackEntity -> playlistConvertor.map(trackEntity) }
+            .distinctBy { it.trackId }
+    }
+
+    override suspend fun removeTrackFromPlaylist(trackId: Int, playlistId: Int, updatedTrackIds: List<Int>) {
+        playlistTrackDao.deleteTrackFromPlaylist(trackId, playlistId)
+
+        val newTrackIds = Gson().toJson(updatedTrackIds)
+        val newTrackCount = updatedTrackIds.size
+
+        playlistDao.updateTrackIdsInPlaylist(playlistId, newTrackIds, newTrackCount)
     }
 }

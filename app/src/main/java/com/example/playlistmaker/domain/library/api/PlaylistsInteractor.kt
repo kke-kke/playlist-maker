@@ -12,4 +12,5 @@ interface PlaylistsInteractor {
     suspend fun addTrackToPlaylist(track: Track, playlist: Playlist): Boolean
     suspend fun getPlaylistDuration(trackIds: List<Int>): Long
     suspend fun getTracksByIds(trackIds: List<Int>): List<Track>
+    suspend fun removeTrackFromPlaylist(trackId: Int, playlistId: Int, updatedTrackIds: List<Int>)
 }
