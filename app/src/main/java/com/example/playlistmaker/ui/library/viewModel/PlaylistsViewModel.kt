@@ -1,15 +1,20 @@
 package com.example.playlistmaker.ui.library.viewModel;
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.library.api.PlaylistsInteractor
 import com.example.playlistmaker.domain.library.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.domain.sharing.SharingInteractor
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) : ViewModel(){
+class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor, private val sharingInteractor: SharingInteractor) : ViewModel(){
     private val _playlists = MutableLiveData<List<Playlist>>()
     val playlists: LiveData<List<Playlist>> get() = _playlists
 
@@ -97,6 +102,22 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor) :
         viewModelScope.launch {
             val duration = playlistsInteractor.getPlaylistDuration(trackIds)
             _playlistDuration.postValue(duration)
+        }
+    }
+
+    fun sharePlaylist(context: Context, playlist: Playlist) {
+        viewModelScope.launch{
+            val tracks = playlistsInteractor.getTracksByIds(playlist.trackIds)
+            val trackList = tracks.mapIndexed { index, track ->
+                "${index + 1}. ${track.artistName} - ${track.trackName} (${SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime)})"
+            }
+            sharingInteractor.sharePlaylist(
+                context,
+                playlist.name,
+                playlist.description,
+                context.resources.getQuantityString(R.plurals.tracks_count, playlist.trackCount, playlist.trackCount),
+                trackList
+            )
         }
     }
 }

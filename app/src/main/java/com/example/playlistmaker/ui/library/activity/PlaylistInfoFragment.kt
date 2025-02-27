@@ -107,6 +107,10 @@ class PlaylistInfoFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+        playlistInfoBinding.shareButtonPlaylist.setOnClickListener {
+            playlistsViewModel.sharePlaylist(requireContext(), playlist)
+        }
+
         playlistInfoBinding.menuButtonPlaylist.setOnClickListener {
             bindMenuPlaylist(playlist)
             menuBottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED

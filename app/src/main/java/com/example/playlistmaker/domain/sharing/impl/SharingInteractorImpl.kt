@@ -19,6 +19,20 @@ class SharingInteractorImpl(private val externalNavigator: ExternalNavigator) : 
         externalNavigator.openEmail(context, getSupportEmailData(context))
     }
 
+    override fun sharePlaylist(context: Context, name: String, description: String, trackCount: String, tracks: List<String>) {
+        val tracksText = tracks.joinToString("\n")
+
+        val playlistText = """
+            |$name
+            |$description
+            |$trackCount
+            |$tracksText
+            """.trimMargin()
+
+        externalNavigator.shareLink(context, playlistText)
+    }
+
+
     private fun getShareAppLink(context: Context): String {
         return context.getString(R.string.share_link)
     }
