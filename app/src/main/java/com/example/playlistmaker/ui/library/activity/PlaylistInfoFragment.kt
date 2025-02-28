@@ -114,6 +114,10 @@ class PlaylistInfoFragment : Fragment() {
         )
 
         playlistsViewModel.calculatePlaylistDuration(tracks.map { it.trackId })
+
+        if (tracks.isEmpty()) {
+            Toast.makeText(requireContext(), "В этом плейлисте нет треков", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun submitList(tracks: List<Track>) {
