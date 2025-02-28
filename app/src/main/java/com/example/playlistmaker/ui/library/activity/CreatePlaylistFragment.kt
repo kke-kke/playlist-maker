@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -72,6 +73,12 @@ open class CreatePlaylistFragment : Fragment() {
         }
 
         initClickListeners()
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleExit()
+            }
+        })
     }
 
     override fun onResume() {
@@ -86,11 +93,7 @@ open class CreatePlaylistFragment : Fragment() {
 
     private fun initClickListeners() {
         createPlaylistBinding.createPlaylistToolbar.setOnClickListener {
-            if (isPlaylistModified()) {
-                showExitConfirmationDialog()
-            } else {
-                findNavController().navigateUp()
-            }
+            handleExit()
         }
 
         createPlaylistBinding.playlistCoverImageContainer.setOnClickListener {
@@ -127,8 +130,15 @@ open class CreatePlaylistFragment : Fragment() {
                 getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(context.getColor(R.color.main_background_color))
                 getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(context.getColor(R.color.main_background_color))
             }
+    }
 
+    private fun handleExit() {
+        if (isPlaylistModified()) {
+            showExitConfirmationDialog()
+        } else {
+            findNavController().navigateUp()
         }
+    }
 
     fun requestStoragePermission() {
         lifecycleScope.launch {
