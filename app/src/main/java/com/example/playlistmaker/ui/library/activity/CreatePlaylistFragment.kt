@@ -2,11 +2,14 @@ package com.example.playlistmaker.ui.library.activity
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -129,19 +132,61 @@ open class CreatePlaylistFragment : Fragment() {
 
     fun requestStoragePermission() {
         lifecycleScope.launch {
-            requester.request(Manifest.permission.READ_MEDIA_IMAGES).collect { result ->
-                when (result) {
-                    is PermissionResult.Granted -> pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    is PermissionResult.Denied.DeniedPermanently,
-                    is PermissionResult.Denied.NeedsRationale -> {
-                        Toast.makeText(requireContext(), "Разрешение на доступ к фото необходимо для выбора обложки", Toast.LENGTH_LONG).show()
-                    }
-                    is PermissionResult.Cancelled -> return@collect
+            val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Manifest.permission.READ_MEDIA_IMAGES
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
 
+            requester.request(permission).collect { result ->
+                when (result) {
+                    is PermissionResult.Granted -> {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    }
+                    is PermissionResult.Denied.NeedsRationale -> {
+                        showRationaleDialog()
+                    }
+                    is PermissionResult.Denied.DeniedPermanently -> {
+                        showSettingsRedirectDialog()
+                    }
+                    is PermissionResult.Cancelled -> {
+                        Toast.makeText(requireContext(), "Запрос разрешения отменен", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
+    }
 
+    private fun showRationaleDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Доступ к галерее")
+            .setMessage("Для выбора обложки плейлиста необходимо разрешение на доступ к галерее.")
+            .setPositiveButton("OK") { _, _ ->
+                requestStoragePermission()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+            .apply {
+                getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(context.getColor(R.color.main_background_color))
+                getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(context.getColor(R.color.main_background_color))
+            }
+    }
+
+    private fun showSettingsRedirectDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Доступ к галерее")
+            .setMessage("Разрешение отклонено. Пожалуйста, предоставьте доступ в настройках приложения.")
+            .setPositiveButton("Настройки") { _, _ ->
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.fromParts("package", requireContext().packageName, null)
+                startActivity(intent)
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+            .apply {
+                getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(context.getColor(R.color.main_background_color))
+                getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(context.getColor(R.color.main_background_color))
+            }
     }
 
     private fun saveImageToPrivateStorage(uri: Uri): Uri {
