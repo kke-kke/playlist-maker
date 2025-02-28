@@ -26,7 +26,7 @@ class PlaylistDbConvertor {
             playlist.trackCount)
     }
 
-    fun map(track: Track, playlistId: Int): PlaylistTrackEntity {
+    fun map(track: Track, playlistId: Int, dateAdded: Long): PlaylistTrackEntity {
         return PlaylistTrackEntity(
             playlistId,
             track.trackId,
@@ -38,7 +38,8 @@ class PlaylistDbConvertor {
             track.collectionName,
             track.releaseDate,
             track.primaryGenreName,
-            track.country
+            track.country,
+            dateAdded
         )
     }
 

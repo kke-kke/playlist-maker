@@ -46,7 +46,8 @@ class PlaylistsRepositoryImpl(private val appDatabase: AppDatabase, private val 
             return false
         }
 
-        playlistTrackDao.insertTrack(playlistConvertor.map(track, playlist.id))
+        val dateAdded = System.currentTimeMillis()
+        playlistTrackDao.insertTrack(playlistConvertor.map(track, playlist.id, dateAdded))
         val updatedTrackIds = playlist.trackIds.toMutableList().apply { add(track.trackId) }
         val updatedTrackIdsJson = Gson().toJson(updatedTrackIds)
 
