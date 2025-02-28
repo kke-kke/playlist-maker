@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -50,6 +51,14 @@ class PlaylistInfoFragment : Fragment() {
 
         playlistsViewModel.loadTracks(playlist.id, playlist.trackIds)
 
+        setFragmentResultListener("EDIT_PLAYLIST_RESULT") { _, bundle ->
+            val updatedPlaylist = bundle.getSerializable("UPDATED_PLAYLIST") as? Playlist
+            updatedPlaylist?.let {
+                playlist = it
+                bindPlaylist(it)
+                playlistsViewModel.loadTracks(it.id, it.trackIds)
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -61,6 +70,12 @@ class PlaylistInfoFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        playlistsViewModel.playlist.observe(viewLifecycleOwner) { updatedPlaylist ->
+            if (updatedPlaylist != null) {
+                bindPlaylist(updatedPlaylist)
+            }
+        }
+
         playlistsViewModel.getTracksLiveData(playlist.id).observe(viewLifecycleOwner) { tracks ->
             submitList(tracks)
             updatePlaylistInfo(tracks)
@@ -131,7 +146,9 @@ class PlaylistInfoFragment : Fragment() {
             sharePlaylist()
         }
 
-//        playlistInfoBinding.menuEditInfo.setOnClickListener{  }
+        playlistInfoBinding.menuEditInfo.setOnClickListener{
+            startEditPlaylistActivity()
+        }
 
         playlistInfoBinding.menuDetelePlaylist.setOnClickListener {
             showDeleteConfirmationDialog()
@@ -230,6 +247,10 @@ class PlaylistInfoFragment : Fragment() {
 
     private fun startPlayerActivity(track: Track) {
         findNavController().navigate(R.id.action_playlistInfoFragment_to_playerFragment, PlayerFragment.createArgs(track))
+    }
+
+    private fun startEditPlaylistActivity() {
+        findNavController().navigate(R.id.action_playlistInfoFragment_to_editPlaylistFragment, EditPlaylistFragment.createArgs(playlist))
     }
 
     companion object {

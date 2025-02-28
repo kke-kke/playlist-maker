@@ -61,6 +61,15 @@
         android:label="create_playlist"
         tools:layout="@layout/create_playlist" />
     <fragment
+        android:id="@+id/editPlaylistFragment"
+        android:name="com.example.playlistmaker.ui.library.activity.EditPlaylistFragment"
+        android:label="edit_playlist">
+        <argument
+            android:name="playlistId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+    <fragment
         android:id="@+id/playlistInfoFragment"
         android:name="com.example.playlistmaker.ui.library.activity.PlaylistInfoFragment"
         android:label="playlist_info_fragment"
@@ -68,5 +77,8 @@
         <action
             android:id="@+id/action_playlistInfoFragment_to_playerFragment"
             app:destination="@id/playerFragment" />
+        <action
+            android:id="@+id/action_playlistInfoFragment_to_editPlaylistFragment"
+            app:destination="@id/editPlaylistFragment" />
     </fragment>
 </navigation>

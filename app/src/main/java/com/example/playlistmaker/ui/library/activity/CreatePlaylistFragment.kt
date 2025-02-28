@@ -32,12 +32,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
-class CreatePlaylistFragment : Fragment() {
-    private lateinit var createPlaylistBinding: CreatePlaylistBinding
+open class CreatePlaylistFragment : Fragment() {
+    lateinit var createPlaylistBinding: CreatePlaylistBinding
     private val requester = PermissionRequester.instance()
     private lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
     private var isCoverSelected = false
-    private var savedCoverUri: Uri? = null
+    var savedCoverUri: Uri? = null
     private val playlistsViewModel by viewModel<PlaylistsViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -57,15 +57,16 @@ class CreatePlaylistFragment : Fragment() {
         })
 
         pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                if (uri != null) {
-                    createPlaylistBinding.playlistCoverImageContainer.background = null
-                    createPlaylistBinding.playlistCoverImage.setImageURI(uri)
-                    savedCoverUri = saveImageToPrivateStorage(uri)
-                    isCoverSelected = true
-                } else {
-                    Log.d("PhotoPicker", "No media selected")
-                }
+            if (uri != null) {
+                createPlaylistBinding.playlistCoverImageContainer.background = null
+                createPlaylistBinding.playlistCoverImage.setImageURI(uri)
+                savedCoverUri = saveImageToPrivateStorage(uri)
+                createPlaylistBinding.playlistCoverImage.tag = savedCoverUri.toString()
+                isCoverSelected = true
+            } else {
+                Log.d("PhotoPicker", "No media selected")
             }
+        }
 
         initClickListeners()
     }
@@ -126,16 +127,15 @@ class CreatePlaylistFragment : Fragment() {
 
         }
 
-    private fun requestStoragePermission() {
+    fun requestStoragePermission() {
         lifecycleScope.launch {
             requester.request(Manifest.permission.READ_MEDIA_IMAGES).collect { result ->
                 when (result) {
                     is PermissionResult.Granted -> pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    is PermissionResult.Denied.DeniedPermanently -> {
+                    is PermissionResult.Denied.DeniedPermanently,
+                    is PermissionResult.Denied.NeedsRationale -> {
                         Toast.makeText(requireContext(), "Разрешение на доступ к фото необходимо для выбора обложки", Toast.LENGTH_LONG).show()
                     }
-                    is PermissionResult.Denied.NeedsRationale ->
-                        Toast.makeText(requireContext(), "Разрешение на доступ к фото необходимо для выбора обложки", Toast.LENGTH_LONG).show()
                     is PermissionResult.Cancelled -> return@collect
 
                 }

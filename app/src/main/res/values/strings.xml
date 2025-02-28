@@ -42,6 +42,9 @@
     <string name="playlist_name">Название*</string>
     <string name="playlist_description">Описание</string>
     <string name="create_button">Создать</string>
+    <!-- Создать плейлист -->
+    <string name="edit">Редактировать</string>
+    <string name="save_button">Сохранить</string>
     <!-- Меню плейлиста -->
     <string name="share2">Поделиться</string>
     <string name="edit_info">Редактировать информацию</string>

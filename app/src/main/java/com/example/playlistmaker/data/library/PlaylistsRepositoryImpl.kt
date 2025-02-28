@@ -24,14 +24,20 @@ class PlaylistsRepositoryImpl(private val appDatabase: AppDatabase, private val 
         playlistDao.insertNewPlaylist(playlistConvertor.map(playlist))
     }
 
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        playlistDao.updatePlaylist(playlist.id, playlist.name, playlist.description, playlist.coverUri)
+    }
+
     override suspend fun updateTrackIds(playlistId: Int, newTrackIds: List<Int>) {
         val trackIdsJson = Gson().toJson(newTrackIds)
         val newTrackCount = newTrackIds.size
         playlistDao.updateTrackIdsInPlaylist(playlistId, trackIdsJson, newTrackCount)
     }
 
-    override suspend fun getPlaylistById(id: Int): Playlist? {
-        return playlistDao.getPlaylistById(id)?.let { playlistConvertor.map(it) }
+    override fun getPlaylistById(id: Int): Flow<Playlist?> {
+        return playlistDao.getPlaylistById(id).map { entity ->
+            entity?.let { playlistConvertor.map(it) }
+        }
     }
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist): Boolean {

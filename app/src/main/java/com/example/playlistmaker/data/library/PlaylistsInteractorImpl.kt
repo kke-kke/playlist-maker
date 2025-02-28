@@ -17,11 +17,15 @@ class PlaylistsInteractorImpl(private val playlistsRepository: PlaylistsReposito
         playlistsRepository.insertPlaylist(playlist)
     }
 
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        playlistsRepository.updatePlaylist(playlist)
+    }
+
     override suspend fun updateTrackIds(playlistId: Int, newTrackIds: List<Int>) {
         playlistsRepository.updateTrackIds(playlistId, newTrackIds)
     }
 
-    override suspend fun getPlaylistById(id: Int): Playlist? {
+    override fun getPlaylistById(id: Int): Flow<Playlist?> {
         return playlistsRepository.getPlaylistById(id)
     }
 

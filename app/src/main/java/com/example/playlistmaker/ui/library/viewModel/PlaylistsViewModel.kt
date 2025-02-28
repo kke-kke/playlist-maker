@@ -10,15 +10,16 @@ import com.example.playlistmaker.domain.library.api.PlaylistsInteractor
 import com.example.playlistmaker.domain.library.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.sharing.SharingInteractor
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor, private val sharingInteractor: SharingInteractor) : ViewModel(){
+open class PlaylistsViewModel(val playlistsInteractor: PlaylistsInteractor, private val sharingInteractor: SharingInteractor) : ViewModel(){
     private val _playlists = MutableLiveData<List<Playlist>>()
     val playlists: LiveData<List<Playlist>> get() = _playlists
 
-    private val _playlist = MutableLiveData<Playlist?>()
+    val _playlist = MutableLiveData<Playlist?>()
     val playlist: LiveData<Playlist?> get() = _playlist
 
     private val _addTrackStatus = MutableLiveData<AddTrackState?>()
@@ -61,13 +62,17 @@ class PlaylistsViewModel(private val playlistsInteractor: PlaylistsInteractor, p
 
     fun removeTrack(track: Track, playlistId: Int) {
         viewModelScope.launch {
-            val updatedTrackIds = playlistsInteractor.getPlaylistById(playlistId)?.trackIds?.toMutableList()
-                ?.apply { remove(track.trackId) } ?: return@launch
+            playlistsInteractor.getPlaylistById(playlistId)
+                .collectLatest { playlist ->
+                    playlist?.let {
+                        val updatedTrackIds = it.trackIds.toMutableList().apply { remove(track.trackId) }
 
-            playlistsInteractor.removeTrackFromPlaylist(track.trackId, playlistId, updatedTrackIds)
+                        playlistsInteractor.removeTrackFromPlaylist(track.trackId, playlistId, updatedTrackIds)
 
-            loadPlaylists()
-            loadTracks(playlistId, updatedTrackIds)
+                        loadPlaylists()
+                        loadTracks(playlistId, updatedTrackIds)
+                    }
+                }
         }
     }
 
