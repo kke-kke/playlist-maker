@@ -32,6 +32,7 @@ class PlaylistInfoFragment : Fragment() {
     private val adapter = TrackAdapter()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private lateinit var menuBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private var isToastShown = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         playlistInfoBinding = PlaylistInfoFragmentBinding.inflate(inflater, container, false)
@@ -115,17 +116,18 @@ class PlaylistInfoFragment : Fragment() {
 
         playlistsViewModel.calculatePlaylistDuration(tracks.map { it.trackId })
 
-        if (tracks.isEmpty()) {
+        if (tracks.isEmpty() && !isToastShown) {
+            isToastShown = true
             Toast.makeText(requireContext(), "В этом плейлисте нет треков", Toast.LENGTH_LONG).show()
+        } else if (tracks.isNotEmpty()) {
+            isToastShown = false
         }
     }
 
     private fun submitList(tracks: List<Track>) {
-        if (!tracks.isNullOrEmpty()) {
-            adapter.tracks.clear()
-            adapter.tracks.addAll(tracks)
-            adapter.notifyDataSetChanged()
-        }
+        adapter.tracks.clear()
+        adapter.tracks.addAll(tracks)
+        adapter.notifyDataSetChanged()
     }
 
     private fun initClickListeners() {
