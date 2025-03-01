@@ -10,7 +10,7 @@ import com.example.playlistmaker.domain.library.api.PlaylistsInteractor
 import com.example.playlistmaker.domain.library.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.sharing.SharingInteractor
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -54,7 +54,6 @@ open class PlaylistsViewModel(val playlistsInteractor: PlaylistsInteractor, priv
         viewModelScope.launch {
             val tracks = playlistsInteractor.getTracksByIds(trackIds)
             _tracksMap.getOrPut(playlistId) { MutableLiveData() }.apply {
-                postValue(emptyList())
                 postValue(tracks)
             }
         }
@@ -63,15 +62,13 @@ open class PlaylistsViewModel(val playlistsInteractor: PlaylistsInteractor, priv
     fun removeTrack(track: Track, playlistId: Int) {
         viewModelScope.launch {
             playlistsInteractor.getPlaylistById(playlistId)
-                .collectLatest { playlist ->
-                    playlist?.let {
-                        val updatedTrackIds = it.trackIds.toMutableList().apply { remove(track.trackId) }
+                .firstOrNull()?.let { playlist ->
+                    val updatedTrackIds = playlist.trackIds.toMutableList().apply { remove(track.trackId) }
 
-                        playlistsInteractor.removeTrackFromPlaylist(track.trackId, playlistId, updatedTrackIds)
+                    playlistsInteractor.removeTrackFromPlaylist(track.trackId, playlistId, updatedTrackIds)
 
-                        loadPlaylists()
-                        loadTracks(playlistId, updatedTrackIds)
-                    }
+
+                    _tracksMap[playlistId]?.postValue(playlistsInteractor.getTracksByIds(updatedTrackIds))
                 }
         }
     }
