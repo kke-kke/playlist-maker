@@ -209,7 +209,7 @@ class PlaylistInfoFragment : Fragment() {
     }
 
     private fun sharePlaylist() {
-        if (playlist.trackIds.isNotEmpty()) {
+        if (adapter.tracks.isNotEmpty()) {
             playlistsViewModel.sharePlaylist(requireContext(), playlist)
         } else {
             Toast.makeText(requireContext(), "В этом плейлисте нет списка треков, которым можно поделиться", Toast.LENGTH_LONG).show()
@@ -247,7 +247,7 @@ class PlaylistInfoFragment : Fragment() {
                 .into(menuPlaylistCoverImage)
 
             menuPlaylistNameTextView.text = playlist.name
-            menuSongQuantity.text = requireContext().resources.getQuantityString(R.plurals.tracks_count, playlist.trackCount, playlist.trackCount)
+            menuSongQuantity.text = requireContext().resources.getQuantityString(R.plurals.tracks_count, adapter.tracks.size, adapter.tracks.size)
         }
     }
 
