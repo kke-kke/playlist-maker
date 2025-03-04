@@ -3,6 +3,7 @@ package com.example.playlistmaker.ui.library.activity
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -29,6 +30,12 @@ class EditPlaylistFragment : CreatePlaylistFragment() {
 
         initEditClickListeners()
         bindPlaylist()
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        })
     }
 
     private fun initEditClickListeners() {
