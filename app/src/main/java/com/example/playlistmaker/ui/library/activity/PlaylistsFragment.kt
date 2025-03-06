@@ -42,6 +42,10 @@ class PlaylistsFragment : Fragment() {
             findNavController().navigate(R.id.action_libraryFragment_to_createPlaylistFragment, CreatePlaylistFragment().arguments)
         }
 
+        adapter.onItemClick = { playlist ->
+            startPlaylistInfoActivity(playlist)
+        }
+
     }
 
     private fun showEmpty() {
@@ -56,6 +60,10 @@ class PlaylistsFragment : Fragment() {
         adapter.playlists.clear()
         adapter.playlists.addAll(playlists)
         adapter.notifyDataSetChanged()
+    }
+
+    private fun startPlaylistInfoActivity(playlist: Playlist) {
+        findNavController().navigate(R.id.action_libraryFragment_to_playlistInfoFragment, PlaylistInfoFragment.createArgs(playlist))
     }
 
 }

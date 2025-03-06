@@ -26,11 +26,35 @@ class PlaylistDbConvertor {
             playlist.trackCount)
     }
 
-    fun map(track: Track): PlaylistTrackEntity {
+    fun map(track: Track, playlistId: Int, dateAdded: Long): PlaylistTrackEntity {
         return PlaylistTrackEntity(
+            playlistId,
             track.trackId,
             track.trackName,
-            track.artistName
+            track.artistName,
+            track.trackTime,
+            track.artworkUrl,
+            track.previewUrl,
+            track.collectionName,
+            track.releaseDate,
+            track.primaryGenreName,
+            track.country,
+            dateAdded
+        )
+    }
+
+    fun map(playlistTrackEntity: PlaylistTrackEntity): Track {
+        return Track(
+            playlistTrackEntity.trackId,
+            playlistTrackEntity.trackTitle,
+            playlistTrackEntity.artist,
+            playlistTrackEntity.trackTimeMillis,
+            playlistTrackEntity.artworkUrl100,
+            playlistTrackEntity.previewUrl,
+            playlistTrackEntity.collectionName,
+            playlistTrackEntity.releaseDate,
+            playlistTrackEntity.primaryGenreName,
+            playlistTrackEntity.country
         )
     }
 }

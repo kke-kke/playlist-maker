@@ -1,5 +1,7 @@
 package com.example.playlistmaker.ui.main.activity
 
+import android.content.Context
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.isVisible
@@ -8,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainBinding: ActivityMainBinding
@@ -23,8 +26,12 @@ class MainActivity : AppCompatActivity() {
         mainBinding.bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            mainBinding.bottomNavigationView.isVisible = destination.id != R.id.playerFragment && destination.id != R.id.createPlaylistFragment
-            mainBinding.navBarDivider.isVisible = destination.id != R.id.playerFragment && destination.id != R.id.createPlaylistFragment
+            mainBinding.bottomNavigationView.isVisible = destination.id != R.id.playerFragment
+                    && destination.id != R.id.createPlaylistFragment
+                    && destination.id != R.id.playlistInfoFragment
+            mainBinding.navBarDivider.isVisible = destination.id != R.id.playerFragment
+                    && destination.id != R.id.createPlaylistFragment
+                    && destination.id != R.id.playlistInfoFragment
         }
 
         mainBinding.bottomNavigationView.setOnItemSelectedListener { item ->
@@ -43,5 +50,19 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(updateLocale(base))
+        applyOverrideConfiguration(base.resources.configuration)
+    }
+
+    private fun updateLocale(context: Context): Context? {
+        val ruLocale = Locale("ru")
+        Locale.setDefault(ruLocale)
+        val configuration: Configuration = context.resources.configuration
+        configuration.setLocale(ruLocale)
+        configuration.setLayoutDirection(ruLocale)
+        return context.createConfigurationContext(configuration)
     }
 }
